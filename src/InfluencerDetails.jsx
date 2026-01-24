@@ -61,27 +61,34 @@ const InfluencerDetails = () => {
           {/* 🖼️ IMAGE (RESPONSIVE & SAFE) */}
           {/* 🖼️ IMAGE SECTION */}
 <div className="w-full bg-gray-100 flex justify-center py-6">
-  <img
-    src={influencer.ProfilePicture}
-    alt={influencer.Name}
+  {/* IMAGE WRAPPER = container */}
+  <div
     className="
-  w-full
-  h-72
-  object-cover
-
-  md:h-auto
-  md:max-w-3xl
-  md:object-contain
-  md:mx-auto
-"
-
-    loading="lazy"
-    onError={(e) => {
-      e.target.src =
-        "https://via.placeholder.com/800x600?text=No+Image";
-    }}
-  />
+      w-full h-72
+      md:w-[900px] md:h-[420px]
+      bg-gray-200
+      flex items-center justify-center
+      overflow-hidden
+      rounded-2xl
+    "
+  >
+    <img
+      src={influencer.ProfilePicture}
+      alt={influencer.Name}
+      className="
+        w-full h-full
+        object-cover
+        md:object-contain
+      "
+      loading="lazy"
+      onError={(e) => {
+        e.target.src =
+          'https://via.placeholder.com/800x600?text=No+Image';
+      }}
+    />
+  </div>
 </div>
+
 
 
           {/* 📄 DETAILS */}

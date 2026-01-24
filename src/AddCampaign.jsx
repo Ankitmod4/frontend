@@ -11,6 +11,7 @@ const AddCampaign = () => {
     endDate: "",
     budget: "",
     location: "",
+    email: "",        // ✅ EMAIL ADDED
     details: "",
   });
 
@@ -23,7 +24,7 @@ const AddCampaign = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("Submitting form data:", formData); // Debugging line
     try {
       const res = await axios.post(
         "http://localhost:8080/api/addcampaign",
@@ -31,7 +32,7 @@ const AddCampaign = () => {
       );
 
       if (res.data.success) {
-        alert("Campaign added successfully");
+        alert("Campaign added successfully ✅");
         setFormData({
           campaignName: "",
           influencerType: "",
@@ -40,28 +41,27 @@ const AddCampaign = () => {
           endDate: "",
           budget: "",
           location: "",
+          email: "",
           details: "",
         });
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Something went wrong");
+      alert(error.response?.data?.message || "Something went wrong ❌");
     }
   };
 
   return (
-   
     <div className="bg-gray-100 min-h-screen py-10">
-        <Link
-          to="/homepage"
-          className="text-indigo-600 font-medium mb-4 inline-block"
-        >
-          ← Back to Home
-        </Link>
+      <Link
+        to="/homepage"
+        className="text-indigo-600 font-medium mb-4 inline-block"
+      >
+        ← Back to Home
+      </Link>
+
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-6">
-          Add Campaign
-        </h2>
-  
+        <h2 className="text-2xl font-bold mb-6">Add Campaign</h2>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -70,6 +70,7 @@ const AddCampaign = () => {
             value={formData.campaignName}
             onChange={handleChange}
             className="w-full border px-4 py-2 rounded-lg"
+            required
           />
 
           <select
@@ -77,6 +78,7 @@ const AddCampaign = () => {
             value={formData.influencerType}
             onChange={handleChange}
             className="w-full border px-4 py-2 rounded-lg"
+            required
           >
             <option value="">Select Influencer Type</option>
             <option value="Nano">Nano</option>
@@ -89,6 +91,7 @@ const AddCampaign = () => {
             value={formData.platformType}
             onChange={handleChange}
             className="w-full border px-4 py-2 rounded-lg"
+            required
           >
             <option value="">Select Platform</option>
             <option value="Instagram">Instagram</option>
@@ -103,6 +106,7 @@ const AddCampaign = () => {
               value={formData.startDate}
               onChange={handleChange}
               className="border px-4 py-2 rounded-lg"
+              required
             />
             <input
               type="date"
@@ -110,6 +114,7 @@ const AddCampaign = () => {
               value={formData.endDate}
               onChange={handleChange}
               className="border px-4 py-2 rounded-lg"
+              required
             />
           </div>
 
@@ -120,6 +125,7 @@ const AddCampaign = () => {
             value={formData.budget}
             onChange={handleChange}
             className="w-full border px-4 py-2 rounded-lg"
+            required
           />
 
           <input
@@ -129,6 +135,18 @@ const AddCampaign = () => {
             value={formData.location}
             onChange={handleChange}
             className="w-full border px-4 py-2 rounded-lg"
+            required
+          />
+
+          {/* ✅ EMAIL FIELD */}
+          <input
+            type="email"
+            name="email"
+            placeholder="Contact Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-lg"
+            required
           />
 
           <textarea
@@ -138,6 +156,7 @@ const AddCampaign = () => {
             onChange={handleChange}
             rows="4"
             className="w-full border px-4 py-2 rounded-lg"
+            required
           ></textarea>
 
           <button

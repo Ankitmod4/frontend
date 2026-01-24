@@ -4,6 +4,7 @@ import InfluencerFilters from "./InfluencerFilters.jsx";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import BlogsList from "./BlogsList.jsx";
+import Footer from "./Footer.jsx";
 
 const Homepage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -203,18 +204,28 @@ const Homepage = () => {
         className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden border border-gray-100"
       >
         {/* IMAGE */}
-        <div className="h-52 w-full bg-gray-200 overflow-hidden">
-          <img
-            src={inf.ProfilePicture}
-            alt={inf.Name}
-            className="h-full w-full object-cover"
-            loading="lazy"
-            onError={(e) => {
-              e.target.src =
-                "https://via.placeholder.com/400x300?text=No+Image";
-            }}
-          />
-        </div>
+       <div className="h-52 w-full bg-gray-200 overflow-hidden flex items-center justify-center">
+<div className="h-52 w-full overflow-hidden rounded-xl">
+ <div className="h-52 w-full bg-gray-200 flex items-center justify-center overflow-hidden rounded-xl">
+ <div className="w-full bg-gray-200 overflow-hidden rounded-xl">
+  <img
+    src={inf.ProfilePicture}
+    alt={inf.Name}
+    className="w-full h-auto object-contain"
+    loading="lazy"
+    onError={(e) => {
+      e.target.src =
+        "https://via.placeholder.com/400x300?text=No+Image";
+    }}
+  />
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 
         {/* CONTENT */}
         <div className="p-4">
@@ -257,9 +268,7 @@ const Homepage = () => {
     <section>
       <BlogsList />
     </section>
-      <footer className="bg-white border-t py-6 text-center text-sm text-gray-500">
-        © 2026 InfluencerHub. All rights reserved.
-      </footer>
+      <Footer />
     </>
   );
 };
