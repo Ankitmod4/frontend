@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { ShieldCheck, Mail, Lock, LogIn, Loader2, Building2, UserCircle } from "lucide-react";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     Email: "",
@@ -20,96 +22,142 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.Email)) {
+      alert("Admin email sahi format mein dalo! 📧");
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const res = await axios.post(
         "http://localhost:8080/api/admin/login",
         formData
       );
 
-      if (res.data.success) { 
-        
-
-        alert("Admin login successful");
+      if (res.data.success) {
+        alert("Admin login successful ✅");
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "admin");
-
         localStorage.setItem("adminAuth", "true");
         navigate("/admin/dashboard");
       }
     } catch (error) {
-      alert(
-        error.response?.data?.message || "Invalid admin credentials"
-      );
+      alert(error.response?.data?.message || "Invalid admin credentials ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4 relative">
+      {/* Subtle Background Glow for White Theme */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-red-600"></div>
+      <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-50"></div>
 
-        {/* Header */}
-        <h2 className="text-2xl font-bold text-center text-gray-800">
-          Admin Login
-        </h2>
-        <p className="text-sm text-center text-gray-500 mt-1">
-          Access admin dashboard
-        </p>
+      <div className="w-full max-w-md z-10">
+        <div className="bg-white border border-slate-100 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-8 md:p-10 animate-in fade-in zoom-in duration-500">
+          
+          {/* Header Section */}
+          <div className="text-center mb-10">
+            <div className="inline-flex p-4 bg-red-50 rounded-3xl mb-4 border border-red-100">
+              <ShieldCheck size={40} className="text-red-600" />
+            </div>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">Admin Portal</h2>
+            <p className="text-slate-400 text-sm mt-1 font-medium">Restricted Administrative Access</p>
+          </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          {/* Form Content */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            <div className="space-y-4">
+              {/* Email Input */}
+              <div className="group">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">
+                  Security ID / Email
+                </label>
+                <div className="relative flex items-center">
+                  <Mail className="absolute left-4 text-slate-300 group-focus-within:text-red-600 transition-colors" size={18} />
+                  <input
+                    name="Email"
+                    type="email"
+                    placeholder="admin@system.com"
+                    value={formData.Email}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl focus:bg-white focus:border-red-600 transition-all outline-none font-medium text-slate-700"
+                  />
+                </div>
+              </div>
 
-          <input
-            type="email"
-            name="Email"
-            placeholder="Admin Email"
-            value={formData.Email}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2
-                       focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
+              {/* Password Input */}
+              <div className="group">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">
+                  Verification Key
+                </label>
+                <div className="relative flex items-center">
+                  <Lock className="absolute left-4 text-slate-300 group-focus-within:text-red-600 transition-colors" size={18} />
+                  <input
+                    name="Password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.Password}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl focus:bg-white focus:border-red-600 transition-all outline-none font-medium text-slate-700"
+                  />
+                </div>
+              </div>
+            </div>
 
-          <input
-            type="password"
-            name="Password"
-            placeholder="Password"
-            value={formData.Password}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2
-                       focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
-
-          <button
-            type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded-lg
-                       hover:bg-red-700 transition duration-300 font-semibold"
-          >
-            Login as Admin
-          </button>
-        </form>
-
-        {/* Links */}
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>
-            Business Login?{" "}
-            <Link
-              to="/business/login"
-              className="text-blue-600 hover:underline font-medium"
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl ${
+                loading
+                  ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-700 text-white shadow-red-100"
+              }`}
             >
-              Go to Business
-            </Link>
-          </p>
+              {loading ? (
+                <Loader2 className="animate-spin" size={24} />
+              ) : (
+                <>Authorize Access <LogIn size={20} /></>
+              )}
+            </button>
+          </form>
 
-          <p className="mt-2">
-            Influencer Login?{" "}
-            <Link
-              to="/influencer/auth"
-              className="text-purple-600 hover:underline font-medium"
-            >
-              Go to Influencer
-            </Link>
-          </p>
+          {/* Switch Roles Section */}
+          <div className="mt-10">
+            <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest mb-6">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+              <span className="relative bg-white px-4 text-slate-400 tracking-tighter">Login as Partner</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Link
+                to="/business/login"
+                className="flex items-center justify-center gap-2 py-3 px-2 bg-slate-50 text-slate-600 rounded-xl text-[11px] font-bold hover:bg-blue-600 hover:text-white transition-all border border-slate-100"
+              >
+                <Building2 size={14} /> Business
+              </Link>
+              <Link
+                to="/influencer/auth"
+                className="flex items-center justify-center gap-2 py-3 px-2 bg-slate-50 text-slate-600 rounded-xl text-[11px] font-bold hover:bg-purple-600 hover:text-white transition-all border border-slate-100"
+              >
+                <UserCircle size={14} /> Influencer
+              </Link>
+            </div>
+          </div>
         </div>
-
+        
+        {/* Footer info */}
+        <p className="text-center mt-8 text-slate-300 text-[10px] font-black uppercase tracking-[0.2em]">
+          System Security Version 2.0.4
+        </p>
       </div>
     </div>
   );

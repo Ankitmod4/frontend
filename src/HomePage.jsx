@@ -12,21 +12,23 @@ const Homepage = () => {
   const [influencers, setInfluencers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
 
   const isLoggedIn = localStorage.getItem("isLoggedIn");
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role");  
 
   const [filters, setFilters] = useState({
     category: "",
     city: "",
     followers: "",
     budget: "",
-  });
+  }); 
 
   // ================= FILTER LOGIC =================
   const filteredInfluencers = influencers.filter((inf) => {
-    if (filters.category && inf.Category !== filters.category) return false;
+    if (filters.category.length > 0 && !filters.category.includes(inf.Category))
+  return false;
+
     if (filters.city && !inf.Location?.toLowerCase().includes(filters.city.toLowerCase())) return false;
     
     if (filters.followers) {
@@ -125,7 +127,7 @@ const Homepage = () => {
         <div className="max-w-7xl mx-auto px-4 py-20 text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold">Hire Top Influencers Instantly</h1>
           <p className="mt-4 text-indigo-100 max-w-2xl mx-auto italic">Connect with verified influencers across Instagram, YouTube and LinkedIn.</p>
-          <button className="mt-8 bg-white text-indigo-600 px-8 py-3 rounded-full font-bold">Explore Influencers</button>
+          <button className="mt-8 bg-white text-indigo-600 px-8 py-3 rounded-full font-bold" onClick={() => navigate("/all-influencers")}>Explore Influencers</button>
         </div>
       </section>
 
@@ -134,11 +136,10 @@ const Homepage = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h2 className="text-xl font-bold text-gray-800">Featured Influencers</h2>
+              <h2 className="text-xl font-bold text-gray-800"  >Featured Influencers</h2>
               <p className="text-sm text-gray-500">Hire top influencers across all platforms</p>
             </div>
             <div className="flex items-center gap-3">
-              <button onClick={() => navigate("/all-influencers")} className="text-indigo-600 font-medium">See All</button>
               <button onClick={() => setIsFilterOpen(true)} className="md:hidden flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
                 <SlidersHorizontal size={16} /> Filters
               </button>
@@ -155,7 +156,7 @@ const Homepage = () => {
           {/* MOBILE VIEW (ORIGINAL HORIZONTAL SCROLL) */}
           <div className="flex gap-4 overflow-x-auto md:hidden pb-4">
             {!loading &&
-  filteredInfluencers.map((inf) => (
+  filteredInfluencers.slice(0,4).map((inf) => (
     <Link
       to={`/influencer/${inf.id}`}
       key={inf.id}
@@ -197,7 +198,7 @@ const Homepage = () => {
           {/* DESKTOP VIEW */}
 <div className="hidden md:grid grid-cols-4 gap-6">
   {!loading &&
-    filteredInfluencers.map((inf) => (
+    filteredInfluencers.slice(0,4).map((inf) => (
       <Link
         to={`/influencer/${inf.id}`}
         key={inf.id}

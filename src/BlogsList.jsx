@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Trash2, BookOpen, Clock } from "lucide-react"; // Modern Icons
+import { Trash2, BookOpen, Clock, LayoutDashboard, Calendar, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const BlogsList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const isAdmin = localStorage.getItem("role") === "admin";
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+   
+  }, []);
   const fetchBlogs = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/blogs");
@@ -22,12 +25,12 @@ const BlogsList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Kyan aap is blog ko delete karna chahte hain?")) return;
+    if (!window.confirm("Delete kar dein?")) return;
     try {
       await axios.delete(`http://localhost:8080/api/blogs/${id}`);
       setBlogs(blogs.filter((blog) => blog.id !== id));
     } catch (error) {
-      alert("Failed to delete blog ❌");
+      alert("Delete failed ❌");
     }
   };
 
@@ -37,97 +40,105 @@ const BlogsList = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-[60vh] space-y-4">
-        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-        <p className="text-gray-500 font-medium animate-pulse">Fetching latest stories...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-6">
+        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-slate-500 font-bold animate-pulse">Loading Stories...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
-{/* Admin Dashboard Link - Only visible to Admins */}
-        <Link to="/admin/dashboard" className="fixed top-4 right-4 bg-black text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-800 transition-all transform hover:scale-105 active:scale-95 font-medium border border-gray-700 flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          Admin Dashboard
+    <div className="min-h-screen bg-[#fcfcfd] py-12 px-4 sm:px-6">
+      
+      {/* FLOATING ADMIN DASHBOARD BUTTON */}
+      {isAdmin && (
+        <Link 
+          to="/admin/dashboard" 
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl hover:bg-indigo-600 transition-all duration-300 active:scale-95 border border-slate-700"
+        >
+          <LayoutDashboard size={18} />
+          <span className="text-sm font-bold hidden sm:inline">Admin Panel</span>
         </Link>
-{isAdmin && (
-  <div className="fixed bottom-8 right-8 z-50">
-    <Link 
-      to="/admin/dashboard" 
-      className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-full shadow-2xl hover:bg-gray-800 transition-all transform hover:scale-105 active:scale-95 font-medium border border-gray-700"
-    >
-      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-      Admin Dashboard
-    </Link>
-  </div>
-)}      <div className="max-w-3xl mx-auto">
-        {/* Header Section */}
-        <div className="flex items-center justify-between mb-10">
-          <div>
-            <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-              Our <span className="text-blue-600">Feed</span>
-            </h1>
-            <p className="mt-2 text-gray-600">Discover interesting ideas and news.</p>
-          </div>
-          <div className="hidden sm:block">
-             <BookOpen className="w-10 h-10 text-blue-100" />
-          </div>
+      )}
+
+      <div className="max-w-3xl mx-auto">
+        {/* PAGE HEADER */}
+        <div className="text-center mb-16 space-y-4">
+          <span className="px-4 py-1.5 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-[0.2em] rounded-full">
+            The Community Feed
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
+            Latest <span className="text-indigo-600">Insights</span>
+          </h1>
+          <p className="text-slate-500 max-w-md mx-auto font-medium">
+            Explore stories, tutorials, and news from our top creators.
+          </p>
         </div>
 
-        {/* Blog Cards */}
+        {/* BLOGS CONTAINER */}
         {blogs.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
-            <p className="text-gray-400 text-lg italic">Abhi koi blog nahi mila...</p>
+          <div className="bg-white rounded-[2.5rem] py-24 text-center border-2 border-dashed border-slate-100">
+            <BookOpen className="mx-auto text-slate-200 mb-4" size={48} />
+            <p className="text-slate-400 font-bold italic text-lg">No stories posted yet.</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-12">
             {blogs.map((blog) => (
               <article
                 key={blog.id}
-                className="group relative bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                className="group bg-white rounded-[2.5rem] border border-slate-100 p-6 sm:p-10 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-100/40"
               >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h2 className="text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
-                      {blog.title}
-                    </h2>
-                    <div className="flex items-center mt-2 text-gray-400 text-xs space-x-3">
-                      
-                      
-                      <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">
-                        Article
-                      </span>
+                {/* META INFO */}
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-100">
+                      {blog.title.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-slate-800 leading-none">Influencial Hub</p>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Official Author</p>
                     </div>
                   </div>
 
                   {isAdmin && (
                     <button
                       onClick={() => handleDelete(blog.id)}
-                      className="ml-4 p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                      className="p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                     >
                       <Trash2 size={20} />
                     </button>
                   )}
                 </div>
 
-                <div className="mt-4">
-                  <p className="text-gray-600 leading-relaxed line-clamp-3 md:line-clamp-none whitespace-pre-line">
+                {/* CONTENT SECTION */}
+                <div className="space-y-4">
+                  <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
+                    {blog.title}
+                  </h2>
+                  
+                  <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest pb-4 border-b border-slate-50">
+                    <span className="flex items-center gap-1.5"><Calendar size={12}/> Jan 2026</span>
+                  </div>
+
+                  <p className="text-slate-600 text-base sm:text-lg leading-relaxed whitespace-pre-line pt-2">
                     {blog.content}
                   </p>
                 </div>
 
-                <div className="mt-6 flex items-center">
-                   <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
-                      {blog.title.charAt(0)}
-                   </div>
-                   <span className="ml-2 text-sm font-medium text-gray-700">Author Name</span>
+                {/* BOTTOM DECOR (Optional) */}
+                <div className="mt-8 flex items-center gap-2">
+                   <div className="h-1 w-12 bg-indigo-600 rounded-full"></div>
+                   <div className="h-1 w-2 bg-slate-100 rounded-full"></div>
                 </div>
               </article>
             ))}
           </div>
         )}
       </div>
+
+      <style>{`
+        body { background-color: #fcfcfd; }
+      `}</style>
     </div>
   );
 };

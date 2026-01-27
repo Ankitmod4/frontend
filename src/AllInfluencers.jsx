@@ -18,6 +18,16 @@ const AllInfluencers = () => {
   });
 
   // ================= FETCH DATA =================
+
+
+  useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth", // ya "auto"
+  });
+}, []);
+
   useEffect(() => {
     const fetchAll = async () => {
       try {

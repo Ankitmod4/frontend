@@ -1,179 +1,207 @@
 import React, { useState } from "react";
+import { X, Info, ShieldCheck, FileText, Mail, Globe, Copyright } from "lucide-react";
 
 const Footer = () => {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
 
-  const toggleModal = () => setOpen(!open);
+  const toggleModal = () => {
+    setOpen(!open);
+    if (!open) document.body.style.overflow = "hidden"; // Scroll lock
+    else document.body.style.overflow = "auto";
+  };
 
   const tabs = [
-    { id: "about", label: "About Us" },
-    { id: "privacy", label: "Privacy Policy" },
-    { id: "terms", label: "Terms & Conditions" },
+    { id: "about", label: "About Us", icon: <Info size={16} /> },
+    { id: "privacy", label: "Privacy", icon: <ShieldCheck size={16} /> },
+    { id: "terms", label: "Terms", icon: <FileText size={16} /> },
   ];
 
   return (
     <>
-      {/* FOOTER SECTION */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-10">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-gray-600 font-semibold text-lg mb-2">InfluencialHub</p>
-          <p className="text-gray-400 text-sm">© 2026 InfluencerHub. All rights reserved.</p>
-          
-          <div className="mt-6">
+      {/* ================= FOOTER SECTION ================= */}
+      <footer className="bg-white border-t border-slate-200 pt-16 pb-8">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+            {/* Brand Logo & Tagline */}
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl font-black text-indigo-600 tracking-tight">InfluencialHub</h2>
+              <p className="text-slate-500 text-sm mt-2 max-w-xs">
+                Empowering connections between visionaries and world-class brands.
+              </p>
+            </div>
+
+            {/* Legal Trigger Button */}
             <button
               onClick={toggleModal}
-              className="inline-flex items-center px-6 py-3 border border-indigo-600 text-indigo-600 font-semibold rounded-full hover:bg-indigo-600 hover:text-white transition-all duration-300 shadow-sm hover:shadow-indigo-200"
+              className="group flex items-center gap-3 px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-indigo-600 transition-all duration-300 shadow-xl shadow-slate-200 hover:shadow-indigo-200 active:scale-95"
             >
-              View Legal Policies & About Us
+              Legal & Information
+              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
+          </div>
+
+          {/* Bottom Divider & Copyright */}
+          <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-xs font-medium uppercase tracking-widest">
+            <div className="flex items-center gap-1">
+              <Copyright size={14} /> 2026 InfluencialHub. All rights reserved.
+            </div>
+            <div className="flex gap-6">
+              <span className="hover:text-indigo-600 cursor-default transition-colors text-[10px] sm:text-xs">Udaipur, Rajasthan, India</span>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* MODAL OVERLAY */}
+      {/* ================= MODAL OVERLAY (RESPONSIVE) ================= */}
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl relative overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
+          
+          {/* Backdrop Click */}
+          <div className="absolute inset-0" onClick={toggleModal} />
+
+          {/* Modal Box */}
+          <div className="relative bg-white w-full max-w-4xl h-[85vh] sm:h-auto sm:max-h-[85vh] rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom sm:zoom-in duration-300">
             
-            {/* MODAL HEADER */}
-            <div className="flex justify-between items-center px-8 py-5 border-b bg-gray-50">
+            {/* Header */}
+            <div className="flex justify-between items-center px-6 sm:px-10 py-6 border-b bg-slate-50/50">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Information Center</h2>
-                <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">InfluencialHub Official Documentation</p>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Legal Center</h2>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                  <p className="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Verified Documentation</p>
+                </div>
               </div>
-              <button
+              <button 
                 onClick={toggleModal}
-                className="p-2 hover:bg-gray-200 rounded-full transition-colors text-gray-500"
+                className="p-3 bg-slate-200/50 hover:bg-red-50 hover:text-red-500 rounded-full transition-all text-slate-500 active:scale-90"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X size={20} />
               </button>
             </div>
 
-            {/* TAB NAVIGATION */}
-            <div className="flex border-b bg-white px-8">
+            {/* Tab Navigation (Scrollable on Mobile) */}
+            <div className="flex overflow-x-auto no-scrollbar border-b bg-white px-4 sm:px-8">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 px-6 text-sm font-medium transition-colors relative ${
-                    activeTab === tab.id ? "text-indigo-600" : "text-gray-500 hover:text-gray-700"
+                  className={`flex items-center gap-2 py-5 px-5 text-sm font-bold whitespace-nowrap transition-all relative ${
+                    activeTab === tab.id ? "text-indigo-600 scale-105" : "text-slate-400 hover:text-slate-600"
                   }`}
                 >
+                  {tab.icon}
                   {tab.label}
                   {activeTab === tab.id && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-indigo-600 rounded-t-full"></div>
                   )}
                 </button>
               ))}
             </div>
 
-            {/* MODAL CONTENT (SCROLLABLE) */}
-            <div className="flex-1 overflow-y-auto p-8 text-gray-700 leading-relaxed">
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6 sm:p-10 text-slate-600 leading-relaxed custom-scrollbar bg-white">
               
               {activeTab === "about" && (
-                <div className="space-y-6">
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <section>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">About Us</h3>
-                    <p>Welcome to <strong>InfluencialHub</strong>, where brands and influencers come together to create impactful marketing campaigns. Our platform simplifies the process of connecting brands with the right influencers, driving authentic engagement and measurable results.</p>
+                    <h3 className="text-2xl font-black text-slate-900 mb-4">Connecting Visionaries.</h3>
+                    <p className="text-lg text-slate-500 italic border-l-4 border-indigo-600 pl-4 py-1">
+                      "We simplify influencer marketing by building bridges, not barriers."
+                    </p>
+                    <p className="mt-4">Welcome to <strong>InfluencialHub</strong>. Our platform is designed to eliminate the friction in brand-influencer collaborations, ensuring every campaign is built on authenticity and data.</p>
                   </section>
-                  <section>
-                    <h4 className="font-bold text-gray-900">Our Mission</h4>
-                    <p>We aim to empower brands and influencers to collaborate seamlessly, fostering genuine connections that resonate with audiences and drive success.</p>
-                  </section>
-                  <section>
-                    <h4 className="font-bold text-gray-900">What We Do</h4>
-                    <ul className="list-disc pl-5 space-y-2 mt-2">
-                      <li><strong>For Brands:</strong> Find the perfect influencers who align with your values and campaign goals.</li>
-                      <li><strong>For Influencers:</strong> Showcase your unique voice and connect with world-class brands.</li>
-                    </ul>
-                  </section>
-                  <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
-                    <p className="text-indigo-800 font-medium">Contact: influencialhub@gmail.com</p>
-                    <p className="text-indigo-600 text-sm">www.influencialhub.com</p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                      <h4 className="font-black text-indigo-600 uppercase text-xs tracking-widest mb-2">For Brands</h4>
+                      <p className="text-sm">Find verified influencers that match your brand identity with precision.</p>
+                    </div>
+                    <div className="p-6 bg-indigo-50 rounded-[2rem] border border-indigo-100">
+                      <h4 className="font-black text-indigo-600 uppercase text-xs tracking-widest mb-2">For Creators</h4>
+                      <p className="text-sm">Get access to premium campaigns and grow your professional presence.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-6 bg-slate-900 rounded-[2rem] text-white">
+                    <div className="flex items-center gap-3">
+                      <Mail className="text-indigo-400" />
+                      <span className="font-bold">influencialhub@gmail.com</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Globe className="text-indigo-400" />
+                      <span className="font-bold text-sm">www.influencialhub.com</span>
+                    </div>
                   </div>
                 </div>
               )}
 
               {activeTab === "privacy" && (
-                <div className="space-y-6 text-sm">
-                  <h3 className="text-xl font-bold text-gray-900">Privacy Policy</h3>
-                  <p className="italic text-gray-500">Last Updated: 2024</p>
-                  
-                  <div>
-                    <h4 className="font-bold text-gray-800">1. Information We Collect</h4>
-                    <p>We collect <strong>Personal Information</strong> (Account details, Payment info, Communications) and <strong>Non-Personal Information</strong> (Usage data, Cookies) to provide a better experience.</p>
+                <div className="space-y-6 animate-in fade-in duration-500">
+                  <h3 className="text-2xl font-black text-slate-900">Privacy Safeguards</h3>
+                  <div className="space-y-6">
+                    <PolicyItem title="Data Collection" desc="We only collect essential account info and usage metrics to improve platform speed and security." />
+                    <PolicyItem title="Data Sharing" desc="Your personal data is never sold. It is only shared with verified partners required to process your payments or campaigns." />
+                    <PolicyItem title="User Rights" desc="You hold the keys to your data. Access, download, or delete your information at any time from your settings." />
                   </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-800">2. How We Use Your Information</h4>
-                    <p>We use data to provide services, process payments, communicate updates, and ensure platform security.</p>
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-800">3. Data Sharing</h4>
-                    <p>We do not sell your data. Sharing only occurs with service providers, for legal compliance, or with your explicit consent.</p>
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-800">4. Your Rights</h4>
-                    <p>You have the right to access, rectify, or erase your personal data. Contact us at influencialhub@gmail.com to exercise these rights.</p>
-                  </div>
-                  <p className="text-[11px] text-gray-400">Please refer to the full policy document for international data transfer details and security protocols.</p>
                 </div>
               )}
 
               {activeTab === "terms" && (
-                <div className="space-y-6 text-sm">
-                  <h3 className="text-xl font-bold text-gray-900">Terms & Conditions</h3>
-                  
-                  <div>
-                    <h4 className="font-bold text-gray-800">1. Introduction</h4>
-                    <p>By using InfluencialHub, you agree to these terms. Users must be 18+ or have legal guardian consent.</p>
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-800">2. Platform Role</h4>
-                    <p>InfluencialHub acts only as a <strong>facilitator</strong>. Agreements between Brands and Influencers are independent of the platform.</p>
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-800">3. Content Ownership</h4>
-                    <p>Users retain ownership of their content but grant us a license to display it while active on the platform.</p>
-                  </div>
-
-                  <div>
-                    <h4 className="font-bold text-gray-800">4. Dispute Resolution</h4>
-                    <p>Governing Law: <strong>India</strong>. Jurisdiction: <strong>Udaipur, Rajasthan</strong>. Disputes shall be resolved through good faith negotiations or binding mediation.</p>
-                  </div>
-
-                  <div className="p-4 border-l-4 border-amber-400 bg-amber-50">
-                    <p className="text-amber-800 font-semibold text-xs uppercase">Limitation of Liability</p>
-                    <p className="text-amber-700">InfluencialHub is provided "as is" and is not liable for indirect or consequential damages.</p>
-                  </div>
+                <div className="space-y-6 animate-in fade-in duration-500 text-sm">
+                   <h3 className="text-2xl font-black text-slate-900">Platform Governance</h3>
+                   <div className="p-5 bg-amber-50 border border-amber-100 rounded-2xl flex gap-4">
+                     <div className="text-amber-600 shrink-0 mt-1"><Info size={20} /></div>
+                     <p className="text-amber-800 text-xs leading-relaxed"><strong>Important:</strong> InfluencialHub acts as a facilitator. All creative and payment agreements made between parties are binding and independent.</p>
+                   </div>
+                   <div className="grid gap-4">
+                     <p><strong>1. Jurisdiction:</strong> These terms are governed by the laws of India, with courts at Udaipur, Rajasthan holding exclusive jurisdiction.</p>
+                     <p><strong>2. Content:</strong> Users grant InfluencialHub a non-exclusive license to showcase campaign content for promotional purposes only.</p>
+                     <p><strong>3. Liability:</strong> We are not responsible for direct or indirect losses resulting from third-party influencer actions.</p>
+                   </div>
                 </div>
               )}
-
             </div>
 
-            {/* MODAL FOOTER */}
-            <div className="border-t px-8 py-5 bg-gray-50 flex justify-between items-center">
-               <p className="text-xs text-gray-400 font-mono">InfluencialHub_Legal_v2.0</p>
+            {/* Footer */}
+            <div className="border-t px-8 py-6 bg-slate-50/50 flex flex-col sm:flex-row gap-4 justify-between items-center shrink-0">
+              <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Version 2.0.4 r1</span>
               <button
                 onClick={toggleModal}
-                className="bg-indigo-600 text-white px-8 py-2.5 rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95"
+                className="w-full sm:w-auto bg-indigo-600 text-white px-10 py-3 rounded-2xl font-black hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95"
               >
-                I Understand
+                Close Portal
               </button>
             </div>
-
           </div>
         </div>
       )}
+
+      {/* Styles */}
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f8fafc; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+      `}</style>
     </>
   );
 };
+
+const PolicyItem = ({ title, desc }) => (
+  <div className="flex gap-4 p-4 hover:bg-slate-50 rounded-2xl transition-colors">
+    <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full mt-2 shrink-0" />
+    <div>
+      <h4 className="font-black text-slate-800 text-sm uppercase tracking-wide mb-1">{title}</h4>
+      <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
+    </div>
+  </div>
+);
+
+const ArrowRight = ({ className, size }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+);
 
 export default Footer;
