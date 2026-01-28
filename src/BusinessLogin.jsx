@@ -28,7 +28,7 @@ const BusinessLogin = () => {
 
     try {
       const res = await axios.post(
-        "/api/business/login",
+        "http://localhost:8080/api/business/login",
         formData
       );
 

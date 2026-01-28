@@ -33,7 +33,7 @@ const InfluencerLogin = () => {
 
     try {
       const res = await axios.post(
-        "/api/influencer/login",
+        "http://localhost:8080/api/influencer/login",
         formData
       );
 

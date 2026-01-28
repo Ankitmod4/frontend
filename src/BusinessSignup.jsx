@@ -46,7 +46,7 @@ const BusinessSignup = () => {
 
     try {
       const res = await axios.post(
-        "/api/business/register",
+        "http://localhost:8080/api/business/register",
         formData
       );
 

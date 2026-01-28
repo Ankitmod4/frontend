@@ -14,7 +14,7 @@ const InfluencerDetails = () => {
   const fetchInfluencer = async () => {
     try {
       const res = await axios.get(
-        `/api/influencers/${id}`
+        `http://localhost:8080/api/influencers/${id}`
       );
 
       if (res.data.success) {
