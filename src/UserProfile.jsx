@@ -19,7 +19,7 @@ const EditBusinessProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/business/${businessId}`);
+        const res = await axios.get(`/api/business/${businessId}`);
         const data = res.data.data;
         setFormData({
           BusinessName: data.BusinessName || "",
@@ -53,7 +53,7 @@ const EditBusinessProfile = () => {
     if (formData.Password.trim()) payload.Password = formData.Password.trim();
 
     try {
-      await axios.put(`http://localhost:8080/api/business/${businessId}`, payload);
+      await axios.put(`/api/business/${businessId}`, payload);
       alert("Profile Updated Successfully ✅");
     } catch (error) {
       console.error(error);
