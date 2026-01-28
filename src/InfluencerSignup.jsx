@@ -55,7 +55,7 @@ const InfluencerSignup = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8080/api/influencer/signup", formData);
+      const res = await axios.post("/api/influencer/signup", formData);
       if (res.data.success) {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "influencer");

@@ -21,27 +21,27 @@ const AdminPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/admin/users");
+      const res = await axios.get("/api/admin/users");
       setUsers(res.data.data || []);
     } catch (err) { console.error(err); }
   };
 
   const fetchInfluencers = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/admin/influencers");
+      const res = await axios.get("/api/admin/influencers");
       setInfluencers(res.data.data || []);
     } catch (err) { console.error(err); }
   };
 
   const deleteUser = async (id) => {
     if (!window.confirm("Bhai, kya sach mein is user ko udaana hai?")) return;
-    await axios.delete(`http://localhost:8080/api/admin/user/${id}`);
+    await axios.delete(`/api/admin/user/${id}`);
     fetchUsers();
   };
 
   const deleteInfluencer = async (id) => {
     if (!window.confirm("Influencer delete karein?")) return;
-    await axios.delete(`http://localhost:8080/api/admin/influencer/${id}`);
+    await axios.delete(`/api/admin/influencer/${id}`);
     fetchInfluencers();
   };
 

@@ -31,7 +31,7 @@ const AllInfluencers = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/influencers");
+        const res = await axios.get("/api/influencers");
         if (res.data.success) setInfluencers(res.data.data);
       } catch (err) {
         console.error("Fetch Error:", err);
