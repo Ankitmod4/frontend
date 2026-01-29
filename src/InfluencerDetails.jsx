@@ -59,31 +59,41 @@ const InfluencerDetails = () => {
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
 
           {/* 🖼️ IMAGE (RESPONSIVE & SAFE) */}
-          {/* 🖼️ IMAGE SECTION */}
-<div className="w-full bg-gray-100 flex justify-center py-6">
-  {/* IMAGE WRAPPER = container */}
+ {/* 🖼️ FULL VIEW IMAGE SECTION */}
+<div className="w-full bg-slate-100 flex justify-center py-6 px-4">
+  {/* IMAGE WRAPPER */}
   <div
     className="
-      w-full h-72
-      md:w-[900px] md:h-[420px]
-      bg-gray-200
-      flex items-center justify-center
+      w-full max-w-6xl 
+      aspect-video 
+      md:h-[500px] 
+      bg-gray-900 
+      relative 
       overflow-hidden
-      rounded-2xl
+      rounded-[2rem]
+      shadow-2xl
+      flex items-center justify-center
     "
   >
+    {/* Background Blur Effect (Optional: Isse fati hui image bhi premium lagti hai) */}
+    <img
+      src={influencer.ProfilePicture}
+      className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-30 scale-110"
+      alt="background blur"
+    />
+
+    {/* MAIN IMAGE: Jo poori dikhegi */}
     <img
       src={influencer.ProfilePicture}
       alt={influencer.Name}
       className="
-        w-full h-full
-        object-cover
-        md:object-contain
+        relative z-10
+        max-w-full max-h-full
+        object-contain
       "
       loading="lazy"
       onError={(e) => {
-        e.target.src =
-          'https://via.placeholder.com/800x600?text=No+Image';
+        e.target.src = 'https://via.placeholder.com/1200x800?text=No+Image';
       }}
     />
   </div>

@@ -92,7 +92,7 @@ const BlogsList = () => {
                     <img 
                       src={blog.image} 
                       alt={blog.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">

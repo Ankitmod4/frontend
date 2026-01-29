@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { Building2, Mail, Phone, Lock, UserPlus, ArrowRight, Loader2, ShieldCheck, UserCircle } from "lucide-react";
@@ -14,7 +14,6 @@ const BusinessSignup = () => {
     Password: ""
   });
 
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -22,26 +21,51 @@ const BusinessSignup = () => {
     });
   };
 
+  // --- Specialized Signup Validation ---
+  const validateForm = () => {
+    const { BusinessName, Email, PhoneNumber, Password } = formData;
+    
+    // 1. Empty Fields Check
+    if (!BusinessName.trim() || !Email.trim() || !PhoneNumber.trim() || !Password.trim()) {
+      alert("Bhai, saari details bharna zaroori hai! 📝");
+      return false;
+    }
+
+    // 2. Business Name Length
+    if (BusinessName.trim().length < 3) {
+      alert("Business Name thoda bada rakho (min 3 chars)! 🏢");
+      return false;
+    }
+
+    // 3. Email Format Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(Email)) {
+      alert("Bhai, sahi Email address dalo! 📧");
+      return false;
+    }
+
+    // 4. Indian Phone Number Validation (10 digits, starts with 6-9)
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(PhoneNumber)) {
+      alert("Mobile number sahi nahi hai! 10 digits dalo jo 6-9 se start ho. 📱");
+      return false;
+    }
+
+    // 5. Password Strength (Minimum 6 characters)
+    if (Password.length < 6) {
+      alert("Security ke liye password kam se kam 6 characters ka rakho! 🔐");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(formData.Email)) {
-    alert("Bhai, sahi Email address dalo! 📧");
-    return;
-  }
 
-  // 2. Phone Number Validation (Only 10 digits starting with 6-9)
-  const phoneRegex = /^[6-9]\d{9}$/;
-  if (!phoneRegex.test(formData.PhoneNumber)) {
-    alert("Mobile number sahi nahi hai (10 digits starting with 6-9)! 📱");
-    return;
-  }
+    // Run validation before API call
+    if (!validateForm()) return;
 
-  // 3. Password Length
-  if (formData.Password.length < 6) {
-    alert("Password kam se kam 6 characters ka hona chahiye! 🔐");
-    return;
-  }
     setLoading(true);
 
     try {
@@ -51,6 +75,7 @@ const BusinessSignup = () => {
       );
 
       if (res.data.success) {
+        alert("Registration Successful! Welcome aboard. 🎉");
         localStorage.setItem("businessId", res.data.data.id);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "user");
@@ -58,7 +83,7 @@ const BusinessSignup = () => {
         navigate("/homepage");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Something went wrong");
+      alert(error.response?.data?.message || "Signup fail ho gaya. Dubara try karo!");
     } finally {
       setLoading(false);
     }
@@ -73,7 +98,6 @@ const BusinessSignup = () => {
       <div className="w-full max-w-md z-10">
         <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-blue-100/50 border border-slate-100 overflow-hidden animate-in fade-in zoom-in duration-500">
           
-          {/* Header Section */}
           <div className="bg-blue-600 p-8 text-white text-center">
             <div className="inline-flex p-3 bg-white/20 rounded-2xl mb-4 backdrop-blur-md">
               <UserPlus size={32} />
@@ -82,10 +106,8 @@ const BusinessSignup = () => {
             <p className="text-blue-100/80 text-sm mt-1 font-medium">Create your business presence today</p>
           </div>
 
-          {/* Form Section */}
           <div className="p-8 md:p-10">
             <form onSubmit={handleSubmit} className="space-y-5">
-              
               {/* Business Name */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Business Identity</label>
@@ -97,7 +119,6 @@ const BusinessSignup = () => {
                     placeholder="e.g. Acme Corporation"
                     value={formData.BusinessName}
                     onChange={handleChange}
-                    required
                     className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-600 transition-all outline-none font-medium text-slate-700"
                   />
                 </div>
@@ -114,7 +135,6 @@ const BusinessSignup = () => {
                     placeholder="contact@business.com"
                     value={formData.Email}
                     onChange={handleChange}
-                    required
                     className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-600 transition-all outline-none font-medium text-slate-700"
                   />
                 </div>
@@ -129,9 +149,9 @@ const BusinessSignup = () => {
                     type="text"
                     name="PhoneNumber"
                     placeholder="98765 43210"
+                    maxLength={10} // HTML level constraint
                     value={formData.PhoneNumber}
                     onChange={handleChange}
-                    required
                     className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-600 transition-all outline-none font-medium text-slate-700"
                   />
                 </div>
@@ -148,13 +168,11 @@ const BusinessSignup = () => {
                     placeholder="••••••••"
                     value={formData.Password}
                     onChange={handleChange}
-                    required
                     className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-600 transition-all outline-none font-medium text-slate-700"
                   />
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -164,41 +182,21 @@ const BusinessSignup = () => {
                     : "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200"
                 }`}
               >
-                {loading ? (
-                  <Loader2 className="animate-spin" size={24} />
-                ) : (
-                  <>Create Account <ArrowRight size={20} /></>
-                )}
+                {loading ? <Loader2 className="animate-spin" size={24} /> : <>Create Account <ArrowRight size={20} /></>}
               </button>
             </form>
 
-            {/* Links Footer */}
             <div className="mt-8 space-y-6">
               <div className="text-center">
                 <p className="text-slate-500 text-sm font-medium">
-                  Already a partner?{" "}
-                  <Link to="/business/login" className="text-blue-600 hover:text-blue-700 font-bold ml-1 transition-colors">
-                    Log In
-                  </Link>
+                  Already a partner? <Link to="/business/login" className="text-blue-600 hover:text-blue-700 font-bold ml-1 transition-colors">Log In</Link>
                 </p>
               </div>
-
-              <div className="relative py-2">
-                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
-                <div className="relative flex justify-center text-[10px] uppercase"><span className="bg-white px-4 text-slate-400 font-black tracking-[0.2em]">Explore More</span></div>
-              </div>
-
               <div className="grid grid-cols-2 gap-3">
-                <Link
-                  to="/influencer/auth"
-                  className="flex items-center justify-center gap-2 py-3 px-2 bg-purple-50 text-purple-600 rounded-2xl text-[11px] font-bold hover:bg-purple-100 transition-colors"
-                >
+                <Link to="/influencer/auth" className="flex items-center justify-center gap-2 py-3 px-2 bg-purple-50 text-purple-600 rounded-2xl text-[11px] font-bold hover:bg-purple-100 transition-colors">
                   <UserCircle size={14} /> Influencer Login
                 </Link>
-                <Link
-                  to="/admin/login"
-                  className="flex items-center justify-center gap-2 py-3 px-2 bg-red-50 text-red-600 rounded-2xl text-[11px] font-bold hover:bg-red-100 transition-colors"
-                >
+                <Link to="/admin/login" className="flex items-center justify-center gap-2 py-3 px-2 bg-red-50 text-red-600 rounded-2xl text-[11px] font-bold hover:bg-red-100 transition-colors">
                   <ShieldCheck size={14} /> Admin Access
                 </Link>
               </div>

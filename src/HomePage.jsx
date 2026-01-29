@@ -163,17 +163,17 @@ const Homepage = () => {
       className="min-w-[240px] bg-white rounded-2xl shadow-md overflow-hidden"
     >
       {/* IMAGE */}
-      <div className="h-44 w-full bg-gray-200 overflow-hidden">
-        <img
-          src={inf.ProfilePicture}
-          alt={inf.Name}
-          className="h-full w-full object-cover"
-          onError={(e) => {
-            e.target.src =
-              "https://via.placeholder.com/300x200?text=No+Image";
-          }}
-        />
-      </div>
+<div className="relative aspect-square w-full overflow-hidden bg-slate-100">
+  <img
+    src={inf.ProfilePicture}
+    alt={inf.Name}
+    className="absolute inset-0 h-full w-full object-cover object-top"
+    loading="lazy"
+    onError={(e) => {
+      e.target.src = "https://via.placeholder.com/400x400?text=No+Profile";
+    }}
+  />
+</div>
 
       {/* CONTENT */}
       <div className="p-3">
@@ -205,26 +205,19 @@ const Homepage = () => {
         className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden border border-gray-100"
       >
         {/* IMAGE */}
-       <div className="h-52 w-full bg-gray-200 overflow-hidden flex items-center justify-center">
-<div className="h-52 w-full overflow-hidden rounded-xl">
- <div className="h-52 w-full bg-gray-200 flex items-center justify-center overflow-hidden rounded-xl">
- <div className="w-full bg-gray-200 overflow-hidden rounded-xl">
+<div className="relative aspect-[3/4] w-full overflow-hidden bg-slate-200">
   <img
     src={inf.ProfilePicture}
     alt={inf.Name}
-    className="w-full h-auto object-contain"
+    className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-110"
     loading="lazy"
     onError={(e) => {
-      e.target.src =
-        "https://via.placeholder.com/400x300?text=No+Image";
+      e.target.src = "https://via.placeholder.com/600x800?text=No+Profile+Image";
     }}
   />
-</div>
-
-</div>
-
-</div>
-
+  
+  {/* Optional: Shadow Overlay taaki text upar sahi dikhe agar tu kuch likhe image pe */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 </div>
 
 

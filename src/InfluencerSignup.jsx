@@ -39,31 +39,68 @@ const InfluencerSignup = () => {
     }
   };
 
+  // --- Specialized Influencer Validation ---
+  const validateForm = () => {
+    const { Name, Email, Password, Category, Location, Followers, Price, AccountLinks } = formData;
+    
+    // 1. Basic Empty Check
+    if (!Name.trim() || !Email.trim() || !Password.trim() || !Category.trim() || !Location.trim()) {
+      alert("Bhai, saari mandatory fields bharo! 📝");
+      return false;
+    }
+
+    // 2. Email Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(Email)) {
+      alert("Email sahi format mein dalo! 📧");
+      return false;
+    }
+
+    // 3. Password Strength
+    if (Password.length < 6) {
+      alert("Password kam se kam 6 characters ka rakho! 🔐");
+      return false;
+    }
+
+    // 4. Numeric Stats Validation (Followers & Price)
+    if (isNaN(Price) || Price <= 0) {
+      alert("Price sahi dalo (sirf numbers)! 💰");
+      return false;
+    }
+
+    // 5. Social Links Validation (Edge Case)
+    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    
+    if (AccountLinks.instagram && !urlPattern.test(AccountLinks.instagram)) {
+      alert("Instagram link sahi nahi hai! 📸");
+      return false;
+    }
+
+    if (AccountLinks.youtube && !urlPattern.test(AccountLinks.youtube)) {
+      alert("YouTube link sahi nahi hai! 🎥");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 🔹 Validation Logic
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.Email)) {
-      alert("Bhai, valid email toh dalo! 📧");
-      return;
-    }
-    if (formData.Password.length < 6) {
-      alert("Password kam se kam 6 chars ka hona chahiye! 🔐");
-      return;
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
     try {
       const res = await axios.post("http://localhost:8080/api/influencer/signup", formData);
       if (res.data.success) {
+        alert("Creator Profile Created! 🎉");
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "influencer");
         localStorage.setItem("influencerId", res.data.data.id);
         navigate("/homepage");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Kuch toh gadbad hai! ❌");
+      alert(error.response?.data?.message || "Registration failed! ❌");
     } finally {
       setLoading(false);
     }
@@ -71,14 +108,12 @@ const InfluencerSignup = () => {
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-4 sm:p-8 relative overflow-hidden">
-      {/* Background Glows */}
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
 
       <div className="w-full max-w-2xl z-10">
         <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-purple-100/50 border border-slate-100 overflow-hidden animate-in fade-in zoom-in duration-500">
           
-          {/* Header Section */}
           <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-8 text-white text-center">
             <div className="inline-flex p-3 bg-white/20 rounded-2xl mb-4 backdrop-blur-md border border-white/30">
               <Sparkles size={32} />
@@ -87,65 +122,49 @@ const InfluencerSignup = () => {
             <p className="text-purple-100/80 text-sm mt-2 font-medium">Create your profile and start collaborating with top brands.</p>
           </div>
 
-          {/* Form Section */}
           <form onSubmit={handleSubmit} className="p-8 md:p-10 space-y-8">
-            
-            {/* Group 1: Personal Info */}
             <div className="space-y-4">
               <SectionTitle title="Personal Credentials" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <IconInput icon={<User size={18}/>} label="Full Name" name="Name" placeholder="Rahul Sharma" onChange={handleChange} required />
-                <IconInput icon={<Mail size={18}/>} label="Email Address" type="email" name="Email" placeholder="rahul@creator.com" onChange={handleChange} required />
-                <IconInput icon={<Lock size={18}/>} label="Create Password" type="password" name="Password" placeholder="••••••••" onChange={handleChange} required />
-                <IconInput icon={<MapPin size={18}/>} label="Location" name="Location" placeholder="Mumbai, India" onChange={handleChange} required />
+                <IconInput icon={<User size={18}/>} label="Full Name" name="Name" placeholder="Rahul Sharma" value={formData.Name} onChange={handleChange} />
+                <IconInput icon={<Mail size={18}/>} label="Email Address" type="email" name="Email" placeholder="rahul@creator.com" value={formData.Email} onChange={handleChange} />
+                <IconInput icon={<Lock size={18}/>} label="Create Password" type="password" name="Password" placeholder="••••••••" value={formData.Password} onChange={handleChange} />
+                <IconInput icon={<MapPin size={18}/>} label="Location" name="Location" placeholder="Mumbai, India" value={formData.Location} onChange={handleChange} />
               </div>
             </div>
 
-            {/* Group 2: Professional Stats */}
             <div className="space-y-4">
               <SectionTitle title="Influence Statistics" />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <IconInput icon={<Tag size={18}/>} label="Category" name="Category" placeholder="Fashion / Tech" onChange={handleChange} required />
-                <IconInput icon={<Users size={18}/>} label="Followers" name="Followers" placeholder="50K" onChange={handleChange} required />
-                <IconInput icon={<IndianRupee size={18}/>} label="Price (₹)" name="Price" placeholder="5000" onChange={handleChange} required />
+                <IconInput icon={<Tag size={18}/>} label="Category" name="Category" placeholder="Fashion" value={formData.Category} onChange={handleChange} />
+                <IconInput icon={<Users size={18}/>} label="Followers" name="Followers" placeholder="50K" value={formData.Followers} onChange={handleChange} />
+                <IconInput icon={<IndianRupee size={18}/>} label="Price (₹)" name="Price" placeholder="5000" value={formData.Price} onChange={handleChange} />
               </div>
             </div>
 
-            {/* Group 3: Social Links */}
             <div className="space-y-4">
               <SectionTitle title="Social Media Presence" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <IconInput icon={<Instagram size={18} className="text-pink-500"/>} label="Instagram Link" name="instagram" placeholder="instagram.com/user" onChange={handleChange} />
-                <IconInput icon={<Youtube size={18} className="text-red-500"/>} label="YouTube Link" name="youtube" placeholder="youtube.com/c/user" onChange={handleChange} />
+                <IconInput icon={<Instagram size={18} className="text-pink-500"/>} label="Instagram Link" name="instagram" placeholder="instagram.com/user" value={formData.AccountLinks.instagram} onChange={handleChange} />
+                <IconInput icon={<Youtube size={18} className="text-red-500"/>} label="YouTube Link" name="youtube" placeholder="youtube.com/c/user" value={formData.AccountLinks.youtube} onChange={handleChange} />
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="pt-4">
               <button
                 type="submit"
                 disabled={loading}
                 className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl ${
-                  loading
-                    ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                    : "bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200"
+                  loading ? "bg-slate-200 text-slate-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200"
                 }`}
               >
-                {loading ? (
-                  <Loader2 className="animate-spin" size={24} />
-                ) : (
-                  <>Create Creator Account <ArrowRight size={20} /></>
-                )}
+                {loading ? <Loader2 className="animate-spin" size={24} /> : <>Create Creator Account <ArrowRight size={20} /></>}
               </button>
             </div>
 
-            {/* Footer Links */}
             <div className="text-center pt-2">
               <p className="text-slate-500 text-sm font-medium">
-                Already part of the hub?{" "}
-                <Link to="/influencer/auth" className="text-purple-600 hover:text-purple-700 font-bold ml-1 transition-colors">
-                  Log In here
-                </Link>
+                Already part of the hub? <Link to="/influencer/auth" className="text-purple-600 hover:text-purple-700 font-bold ml-1 transition-colors">Log In here</Link>
               </p>
             </div>
           </form>
@@ -175,7 +194,6 @@ const InfluencerSignup = () => {
   );
 };
 
-/* --- UI Helper Components --- */
 const SectionTitle = ({ title }) => (
   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 border-b border-slate-50 pb-2 ml-1">
     {title}

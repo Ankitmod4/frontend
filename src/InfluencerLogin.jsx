@@ -19,15 +19,34 @@ const InfluencerLogin = () => {
     });
   };
 
+  // --- Creator-Specific Validation ---
+  const validateForm = () => {
+    const { Email, Password } = formData;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!Email.trim() || !Password.trim()) {
+      alert("Bhai, login karne ke liye dono fields bharna zaroori hai! ✨");
+      return false;
+    }
+
+    if (!emailRegex.test(Email)) {
+      alert("Creator email ka format sahi nahi hai! 📧");
+      return false;
+    }
+
+    if (Password.length < 6) {
+      alert("Password kam se kam 6 characters ka hona chahiye! 🔐");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Basic Validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.Email)) {
-      alert("Bhai, sahi email toh daalo! 📧");
-      return;
-    }
+    // Validate before hitting the API
+    if (!validateForm()) return;
 
     setLoading(true);
 
@@ -38,6 +57,7 @@ const InfluencerLogin = () => {
       );
 
       if (res.data.success) {
+        // Bhai, success alert de sakte ho ya direct navigate kar sakte ho
         localStorage.setItem("influencer", JSON.stringify(res.data.data));
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "influencer");
@@ -46,7 +66,9 @@ const InfluencerLogin = () => {
         navigate("/homepage");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Invalid credentials ❌");
+      // Backend error handling
+      const errorMsg = error.response?.data?.message || "Credentials sahi nahi hain, check kar lo! ❌";
+      alert(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -54,14 +76,13 @@ const InfluencerLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#fafafa] px-4 relative overflow-hidden">
-      {/* Soft Decorative Background Circles */}
+      {/* Decorative Background */}
       <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-60"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-60"></div>
 
       <div className="w-full max-w-md z-10">
         <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-purple-100/50 border border-slate-100 overflow-hidden animate-in fade-in zoom-in duration-500">
           
-          {/* Top Section / Branding */}
           <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-10 text-white text-center relative">
             <div className="inline-flex p-3 bg-white/20 rounded-2xl mb-4 backdrop-blur-md border border-white/30">
               <Sparkles size={32} className="text-white" />
@@ -70,10 +91,8 @@ const InfluencerLogin = () => {
             <p className="text-purple-100/80 text-sm mt-2 font-medium">Connect with top brands today</p>
           </div>
 
-          {/* Form Content */}
           <div className="p-8 md:p-10">
             <form onSubmit={handleSubmit} className="space-y-6">
-              
               <div className="space-y-5">
                 {/* Email Input */}
                 <div className="group">
@@ -88,7 +107,6 @@ const InfluencerLogin = () => {
                       placeholder="you@creator.com"
                       value={formData.Email}
                       onChange={handleChange}
-                      required
                       className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-purple-600 transition-all outline-none font-medium text-slate-700"
                     />
                   </div>
@@ -107,14 +125,12 @@ const InfluencerLogin = () => {
                       placeholder="••••••••"
                       value={formData.Password}
                       onChange={handleChange}
-                      required
                       className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-purple-600 transition-all outline-none font-medium text-slate-700"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Login Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -124,32 +140,22 @@ const InfluencerLogin = () => {
                     : "bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200"
                 }`}
               >
-                {loading ? (
-                  <Loader2 className="animate-spin" size={24} />
-                ) : (
-                  <>Continue to Hub <ArrowRight size={20} /></>
-                )}
+                {loading ? <Loader2 className="animate-spin" size={24} /> : <>Continue to Hub <ArrowRight size={20} /></>}
               </button>
             </form>
 
-            {/* Bottom Links */}
             <div className="mt-10 space-y-6">
               <div className="text-center">
                 <p className="text-slate-500 text-sm font-medium">
-                  New to the hub?{" "}
-                  <Link to="/influencer/signup" className="text-purple-600 hover:text-purple-700 font-bold ml-1 transition-colors">
-                    Join Now
-                  </Link>
+                  New to the hub? <Link to="/influencer/signup" className="text-purple-600 hover:text-purple-700 font-bold ml-1 transition-colors">Join Now</Link>
                 </p>
               </div>
 
-              {/* Separator */}
               <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
                 <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest"><span className="bg-white px-4 text-slate-300">Are you a brand?</span></div>
               </div>
 
-              {/* Business Switcher */}
               <Link
                 to="/business/login"
                 className="flex items-center justify-center gap-3 w-full py-3.5 bg-slate-50 text-slate-600 rounded-2xl text-sm font-bold hover:bg-blue-50 hover:text-blue-600 transition-all border border-slate-100"

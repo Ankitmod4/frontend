@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Mail, Lock, Building2, ArrowRight, Loader2, ShieldCheck, UserCircle } from "lucide-react";
@@ -12,8 +12,8 @@ const BusinessLogin = () => {
   });
 
   useEffect(() => {
-      window.scrollTo(0, 0);
-    }, []);
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -22,8 +22,38 @@ const BusinessLogin = () => {
     });
   };
 
+  // --- Professional Validation Logic ---
+  const validateForm = () => {
+    const { Email, Password } = formData;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // 1. Check if fields are empty
+    if (!Email.trim() || !Password.trim()) {
+      alert("Please fill in all fields! ✍️");
+      return false;
+    }
+
+    // 2. Validate Email Format
+    if (!emailRegex.test(Email)) {
+      alert("Please enter a valid business email address! 📧");
+      return false;
+    }
+
+    // 3. Password Length Check (Edge Case)
+    if (Password.length < 6) {
+      alert("Password must be at least 6 characters long! 🔐");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Pehle validation run hoga
+    if (!validateForm()) return;
+
     setLoading(true);
 
     try {
@@ -41,7 +71,8 @@ const BusinessLogin = () => {
         navigate("/homepage");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Something went wrong");
+      // API error handle karega (wrong credentials ya server down)
+      alert(error.response?.data?.message || "Login failed. Please check your credentials! ❌");
     } finally {
       setLoading(false);
     }
@@ -68,7 +99,6 @@ const BusinessLogin = () => {
           {/* Form Section */}
           <div className="p-8 md:p-10">
             <form onSubmit={handleSubmit} className="space-y-6">
-              
               <div className="space-y-4">
                 {/* Email Field */}
                 <div className="relative group">
@@ -83,7 +113,6 @@ const BusinessLogin = () => {
                       placeholder="name@company.com"
                       value={formData.Email}
                       onChange={handleChange}
-                      required
                       className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-600 transition-all outline-none font-medium text-slate-700"
                     />
                   </div>
@@ -102,7 +131,6 @@ const BusinessLogin = () => {
                       placeholder="••••••••"
                       value={formData.Password}
                       onChange={handleChange}
-                      required
                       className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-600 transition-all outline-none font-medium text-slate-700"
                     />
                   </div>
