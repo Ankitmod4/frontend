@@ -10,7 +10,7 @@ const BlogsList = () => {
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/blogs");
+      const res = await axios.get("https://influencal.influencialhub.com/api/blogs");
       // Console ke hisaab se: res.data.data array hai
       if (res.data.success) {
         setBlogs(res.data.data);
@@ -25,7 +25,7 @@ const BlogsList = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete kar dein?")) return;
     try {
-      await axios.delete(`http://localhost:8080/api/blogs/${id}`);
+      await axios.delete(`https://influencal.influencialhub.com/api/blogs/${id}`);
       setBlogs(blogs.filter((blog) => blog.id !== id));
     } catch (error) {
       alert("Delete failed ❌");

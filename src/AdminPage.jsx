@@ -21,7 +21,7 @@ const AdminPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("/api/admin/users");
+      const res = await axios.get("https://influencal.influencialhub.com/api/admin/users");
       setUsers(res.data.data || []);
     } catch (err) { console.error(err); }
   };

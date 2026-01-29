@@ -70,7 +70,7 @@ const BusinessSignup = () => {
 
     try {
       const res = await axios.post(
-        "/api/business/register",
+        "https://influencal.influencialhub.com/api/business/register",
         formData
       );
 

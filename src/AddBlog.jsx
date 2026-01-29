@@ -24,7 +24,7 @@ const AddBlog = ({ onBlogAdded }) => {
     formData.append("image", image); // Backend mein 'image' key se access hoga
 
     try {
-      await axios.post("http://localhost:8080/api/blogs", formData, {
+      await axios.post("https://influencal.influencialhub.com/api/blogs", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

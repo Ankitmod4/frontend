@@ -91,7 +91,7 @@ const InfluencerSignup = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8080/api/influencer/signup", formData);
+      const res = await axios.post("https://influencal.influencialhub.com/api/influencer/signup", formData);
       if (res.data.success) {
         alert("Creator Profile Created! 🎉");
         localStorage.setItem("isLoggedIn", "true");

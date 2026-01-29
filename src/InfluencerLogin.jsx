@@ -52,7 +52,7 @@ const InfluencerLogin = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/influencer/login",
+        "https://influencal.influencialhub.com/api/influencer/login",
         formData
       );
 

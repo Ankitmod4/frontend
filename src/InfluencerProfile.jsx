@@ -19,7 +19,7 @@ const InfluencerEditProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/influencer/${influencerId}`);
+        const res = await axios.get(`https://influencal.influencialhub.com/api/influencer/${influencerId}`);
         const data = res.data.data;
         setForm({
           Name: data.Name || "",
@@ -66,7 +66,7 @@ const InfluencerEditProfile = () => {
       fd.append("AccountLinks", JSON.stringify({ instagram: form.instagram, youtube: form.youtube, linkedin: form.linkedin }));
       if (image) fd.append("ProfilePicture", image);
 
-      await axios.put(`http://localhost:8080/api/influencer/${influencerId}`, fd);
+      await axios.put(`https://influencal.influencialhub.com/api/influencer/${influencerId}`, fd);
       alert("Profile updated successfully ✅");
     } catch {
       alert("Update failed ❌");

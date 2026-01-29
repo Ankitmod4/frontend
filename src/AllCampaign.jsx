@@ -25,7 +25,7 @@ const AllCampaigns = () => {
 
   const fetchCampaigns = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/campaigns");
+      const res = await axios.get("https://influencal.influencialhub.com/api/campaigns");
       if (res.data.success) {
         setCampaigns(res.data.data);
       }

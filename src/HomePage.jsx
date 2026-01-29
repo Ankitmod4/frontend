@@ -65,7 +65,7 @@ const Homepage = () => {
 
   const fetchInfluencers = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/influencers");
+      const res = await axios.get("https://influencal.influencialhub.com/api/influencers");
       if (res.data.success) {
         setInfluencers(res.data.data);
         console.log("Fetched influencers:", res.data.data);
