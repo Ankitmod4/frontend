@@ -76,11 +76,7 @@ const InfluencerSignup = () => {
       return false;
     }
 
-    if (AccountLinks.youtube && !urlPattern.test(AccountLinks.youtube)) {
-      alert("YouTube link sahi nahi hai! 🎥");
-      return false;
-    }
-
+   
     return true;
   };
 
