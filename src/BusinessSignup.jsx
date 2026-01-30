@@ -27,33 +27,59 @@ const BusinessSignup = () => {
     
     // 1. Empty Fields Check
     if (!BusinessName.trim() || !Email.trim() || !PhoneNumber.trim() || !Password.trim()) {
-      alert("Bhai, saari details bharna zaroori hai! 📝");
+      alert("All fields are required! 📝");
       return false;
     }
 
     // 2. Business Name Length
     if (BusinessName.trim().length < 3) {
-      alert("Business Name thoda bada rakho (min 3 chars)! 🏢");
+      alert("Business name should be larger than 3 letters🏢");
       return false;
     }
 
     // 3. Email Format Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(Email)) {
-      alert("Bhai, sahi Email address dalo! 📧");
-      return false;
-    }
+   if (!formData.Email.trim()) {
+  alert("Email field is empty ✍️");
+  return;
+}
+
+if (!emailRegex.test(formData.Email.trim())) {
+  alert("Please write the correct email like structure 📧");
+  return;
+}
+
+// Edge case: consecutive dots pakadne ke liye
+if (formData.Email.includes("..")) {
+  alert("Dont use double dots in email❌");
+  return;
+}
 
     // 4. Indian Phone Number Validation (10 digits, starts with 6-9)
-    const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(PhoneNumber)) {
-      alert("Mobile number sahi nahi hai! 10 digits dalo jo 6-9 se start ho. 📱");
-      return false;
-    }
+   const cleanPhone = formData.PhoneNumber.trim();
+
+// 1. Sirf numbers check karne ke liye (taki galti se ABCD na ho)
+if (isNaN(cleanPhone)) {
+  alert("Mobile number only consist of 0 to 9 🔢");
+  return;
+}
+
+// 2. Length check (Ekdum 10 digit hi hone chahiye)
+if (cleanPhone.length !== 10) {
+  alert("Mobile no should be 10 digit not more than that 📱");
+  return;
+}
+
+// 3. Starting digit check (6-9 wala rule)
+const phoneRegex = /^[6-9]\d{9}$/;
+if (!phoneRegex.test(cleanPhone)) {
+  alert("Mobile Number should be start from 6 ,7,8,9📱");
+  return;
+}
 
     // 5. Password Strength (Minimum 6 characters)
     if (Password.length < 6) {
-      alert("Security ke liye password kam se kam 6 characters ka rakho! 🔐");
+      alert("Password length must be 6 digits🔐");
       return false;
     }
 
@@ -83,7 +109,7 @@ const BusinessSignup = () => {
         navigate("/homepage");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Signup fail ho gaya. Dubara try karo!");
+      alert(error.response?.data?.message || "Signup Faied Try again");
     } finally {
       setLoading(false);
     }

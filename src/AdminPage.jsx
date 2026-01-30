@@ -28,14 +28,14 @@ const AdminPage = () => {
 
   const fetchInfluencers = async () => {
     try {
-      const res = await axios.get("/api/admin/influencers");
+      const res = await axios.get("https://influencal.influencialhub.com/api/admin/influencers");
       setInfluencers(res.data.data || []);
     } catch (err) { console.error(err); }
   };
 
   const deleteUser = async (id) => {
     if (!window.confirm("Bhai, kya sach mein is user ko udaana hai?")) return;
-    await axios.delete(`/api/admin/user/${id}`);
+    await axios.delete(`https://influencal.influencialhub.com/api/admin/user/${id}`);
     fetchUsers();
   };
 

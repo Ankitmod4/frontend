@@ -11,23 +11,37 @@ const InfluencerDetails = () => {
     fetchInfluencer();
   }, []);
 
-  const fetchInfluencer = async () => {
-    try {
-      const res = await axios.get(
-        `https://influencal.influencialhub.com/api/influencers/${id}`
-      );
+ const fetchInfluencer = async () => {
+  try {
+    const res = await axios.get(
+      `https://influencal.influencialhub.com/api/influencers/${id}`
+    );
 
-      if (res.data.success) {
-        setInfluencer(res.data.data);
-        console.log(res.data.data);
+    if (res.data.success) {
+      // res.data.data ko ek local variable mein liya
+      let influencerData = res.data.data;
+
+      // 🔍 Problem: Backend links ko string bana kar bhej raha hai
+      // Solution: Agar string hai toh usey Object mein convert karo
+      if (typeof influencerData.AccountLinks === 'string') {
+        try {
+          influencerData.AccountLinks = JSON.parse(influencerData.AccountLinks);
+        } catch (e) {
+          console.error("Error parsing AccountLinks JSON:", e);
+          influencerData.AccountLinks = {}; // Agar parsing fail ho toh khali rakho
+        }
       }
-    } catch (err) {
-      console.error("Error fetching influencer", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
+      // Final state update
+      setInfluencer(influencerData);
+      console.log("Parsed Influencer Data:", influencerData);
+    }
+  } catch (err) {
+    console.error("Error fetching influencer", err);
+  } finally {
+    setLoading(false);
+  }
+};
   if (loading) {
     return (
       <div className="text-center mt-20 text-gray-500">

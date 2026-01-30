@@ -15,33 +15,51 @@ const InfluencerEditProfile = () => {
     Name: "", Email: "", Password: "", Category: "", Location: "",
     Followers: "", Price: "", instagram: "", youtube: "", linkedin: "",
   });
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(`https://influencal.influencialhub.com/api/influencer/${influencerId}`);
+      let data = res.data.data;
+      console.log("Raw Data:", data);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get(`https://influencal.influencialhub.com/api/influencer/${influencerId}`);
-        const data = res.data.data;
-        setForm({
-          Name: data.Name || "",
-          Email: data.Email || "",
-          Password: "",
-          Category: data.Category || "",
-          Location: data.Location || "",
-          Followers: data.Followers || "",
-          Price: data.Price || "",
-          instagram: data.AccountLinks?.instagram || "",
-          youtube: data.AccountLinks?.youtube || "",
-          linkedin: data.AccountLinks?.linkedin || "",
-        });
-        setPreview(data.ProfilePicture || "");
-      } catch {
-        alert("Failed to load profile ❌");
-      } finally {
-        setLoading(false);
+      // 🔍 1. AccountLinks String ko Object mein badlo
+      let parsedLinks = { instagram: "", youtube: "" };
+      if (data.AccountLinks) {
+        try {
+          // Agar string hai toh parse karo, nahi toh direct use karo
+          parsedLinks = typeof data.AccountLinks === 'string' 
+            ? JSON.parse(data.AccountLinks) 
+            : data.AccountLinks;
+        } catch (e) {
+          console.error("Error parsing AccountLinks", e);
+        }
       }
-    };
-    if (influencerId) fetchProfile();
-  }, [influencerId]);
+
+      // 🔍 2. Form state update karo
+      setForm({
+        Name: data.Name || "",
+        Email: data.Email || "",
+        Password: "",
+        Category: data.Category || "",
+        Location: data.Location || "",
+        Followers: data.Followers || "",
+        Price: data.Price || "",
+        // Ab parsedLinks se data uthayenge
+        instagram: parsedLinks.instagram || "",
+        youtube: parsedLinks.youtube || "",
+      });
+
+      setPreview(data.ProfilePicture || "");
+    } catch (err) {
+      console.error("Fetch Error:", err);
+      alert("Failed to load profile ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (influencerId) fetchProfile();
+}, [influencerId]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -53,27 +71,68 @@ const InfluencerEditProfile = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setUpdating(true);
-    try {
-      const fd = new FormData();
-      Object.entries({
-        Name: form.Name, Email: form.Email, Category: form.Category,
-        Location: form.Location, Followers: form.Followers, Price: form.Price,
-      }).forEach(([k, v]) => fd.append(k, v));
-      if (form.Password.trim()) fd.append("Password", form.Password);
-      fd.append("AccountLinks", JSON.stringify({ instagram: form.instagram, youtube: form.youtube, linkedin: form.linkedin }));
-      if (image) fd.append("ProfilePicture", image);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-      await axios.put(`https://influencal.influencialhub.com/api/influencer/${influencerId}`, fd);
-      alert("Profile updated successfully ✅");
-    } catch {
-      alert("Update failed ❌");
-    } finally {
-      setUpdating(false);
+  // --- 1. Validation Logic ---
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+  const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+
+  if (!form.Name.trim() || !form.Email.trim()) {
+    alert("Please fill in the required fields! 📝");
+    return;
+  }
+
+  if (!emailRegex.test(form.Email.trim())) {
+    alert("Please enter a valid email address! 📧");
+    return;
+  }
+
+
+  // --- 2. Update Process ---
+  setUpdating(true);
+  try {
+    const fd = new FormData();
+    
+    // Baaki fields append karna
+    Object.entries({
+      Name: form.Name, 
+      Email: form.Email, 
+      Category: form.Category,
+      Location: form.Location, 
+      Followers: form.Followers, 
+      Price: form.Price,
+    }).forEach(([k, v]) => fd.append(k, v));
+
+    // Password sirf tabhi bhejo agar user ne naya password dala ho
+    if (form.Password && form.Password.trim()) {
+      if (form.Password.length < 6) {
+        alert("New password must be at least 6 characters long! 🔐");
+        setUpdating(false);
+        return;
+      }
+      fd.append("Password", form.Password);
     }
-  };
+
+    // AccountLinks ko Stringify karke bhejna (Important)
+    fd.append("AccountLinks", JSON.stringify({ 
+      instagram: form.instagram, 
+      youtube: form.youtube, 
+      linkedin: form.linkedin 
+    }));
+
+    if (image) fd.append("ProfilePicture", image);
+
+    await axios.put(`https://influencal.influencialhub.com/api/influencer/${influencerId}`, fd);
+    alert("Profile updated successfully! ✅");
+    
+  } catch (error) {
+    console.error("Update error:", error);
+    alert(error.response?.data?.message || "Profile update failed. Please try again! ❌");
+  } finally {
+    setUpdating(false);
+  }
+};
 
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
@@ -175,9 +234,7 @@ const InfluencerEditProfile = () => {
               <IconField icon={<Youtube className="text-red-600" size={18}/>} label="YouTube">
                 <input name="youtube" value={form.youtube} onChange={handleChange} className="modern-input" placeholder="Channel URL" />
               </IconField>
-              <IconField icon={<Linkedin className="text-blue-600" size={18}/>} label="LinkedIn">
-                <input name="linkedin" value={form.linkedin} onChange={handleChange} className="modern-input" placeholder="Profile Link" />
-              </IconField>
+              
             </div>
           </div>
 

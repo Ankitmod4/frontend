@@ -40,45 +40,36 @@ const InfluencerSignup = () => {
   };
 
   // --- Specialized Influencer Validation ---
-  const validateForm = () => {
-    const { Name, Email, Password, Category, Location, Followers, Price, AccountLinks } = formData;
-    
-    // 1. Basic Empty Check
-    if (!Name.trim() || !Email.trim() || !Password.trim() || !Category.trim() || !Location.trim()) {
-      alert("Bhai, saari mandatory fields bharo! 📝");
-      return false;
-    }
+ const validateForm = () => {
+  const { Email, Password, AccountLinks } = formData;
 
-    // 2. Email Validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(Email)) {
-      alert("Email sahi format mein dalo! 📧");
-      return false;
-    }
+  // 1. Email Validation (Checking for @ and domain extension like .com)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+  
+  if (!Email.trim()) {
+    alert("Please enter your email address! 📧");
+    return false;
+  }
+  
+  if (!emailRegex.test(Email.trim())) {
+    alert("Please enter a valid email address (e.g., name@example.com)! 📧");
+    return false;
+  }
 
-    // 3. Password Strength
-    if (Password.length < 6) {
-      alert("Password kam se kam 6 characters ka rakho! 🔐");
-      return false;
-    }
+  // 2. Password Validation (Minimum 6 characters)
+  if (!Password.trim()) {
+    alert("Please enter a password! 🔐");
+    return false;
+  }
 
-    // 4. Numeric Stats Validation (Followers & Price)
-    if (isNaN(Price) || Price <= 0) {
-      alert("Price sahi dalo (sirf numbers)! 💰");
-      return false;
-    }
+  if (Password.length < 6) {
+    alert("Password must be at least 6 characters long! 🔐");
+    return false;
+  }
 
-    // 5. Social Links Validation (Edge Case)
-    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-    
-    if (AccountLinks.instagram && !urlPattern.test(AccountLinks.instagram)) {
-      alert("Instagram link sahi nahi hai! 📸");
-      return false;
-    }
 
-   
-    return true;
-  };
+  return true;
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,11 +81,13 @@ const InfluencerSignup = () => {
       const res = await axios.post("https://influencal.influencialhub.com/api/influencer/signup", formData);
       if (res.data.success) {
         alert("Creator Profile Created! 🎉");
+        console.log(res.data);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "influencer");
         localStorage.setItem("influencerId", res.data.data.id);
         navigate("/homepage");
       }
+
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed! ❌");
     } finally {
