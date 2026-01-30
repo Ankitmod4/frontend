@@ -41,7 +41,7 @@ const AdminPage = () => {
 
   const deleteInfluencer = async (id) => {
     if (!window.confirm("Influencer delete karein?")) return;
-    await axios.delete(`/api/admin/influencer/${id}`);
+    await axios.delete(`https://influencal.influencialhub.com/api/admin/influencer/${id}`);
     fetchInfluencers();
   };
 
