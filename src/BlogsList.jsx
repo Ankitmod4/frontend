@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Trash2, BookOpen, Clock, LayoutDashboard, Calendar, Image as ImageIcon } from "lucide-react";
+import { Trash2, BookOpen, LayoutDashboard, Calendar, Image as ImageIcon, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const BlogsList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); // 🔍 Search filter state
   const isAdmin = localStorage.getItem("role") === "admin";
 
   const fetchBlogs = async () => {
     try {
       const res = await axios.get("https://influencal.influencialhub.com/api/blogs");
-      // Console ke hisaab se: res.data.data array hai
       if (res.data.success) {
         setBlogs(res.data.data);
       }
@@ -23,7 +23,7 @@ const BlogsList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete kar dein?")) return;
+    if (!window.confirm("Confirm to Delete")) return;
     try {
       await axios.delete(`https://influencal.influencialhub.com/api/blogs/${id}`);
       setBlogs(blogs.filter((blog) => blog.id !== id));
@@ -37,7 +37,15 @@ const BlogsList = () => {
     fetchBlogs();
   }, []);
 
-  // Date format karne ke liye helper function
+  // ================= FILTER LOGIC =================
+  const filteredBlogs = blogs.filter((blog) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      blog.title.toLowerCase().includes(searchLower) || 
+      blog.content.toLowerCase().includes(searchLower)
+    );
+  });
+
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -65,7 +73,7 @@ const BlogsList = () => {
       )}
 
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-16 space-y-4">
+        <div className="text-center mb-10 space-y-4">
           <span className="px-4 py-1.5 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-[0.2em] rounded-full">
             The Community Feed
           </span>
@@ -74,19 +82,34 @@ const BlogsList = () => {
           </h1>
         </div>
 
-        {blogs.length === 0 ? (
+        {/* 🔥 SEARCH FILTER INPUT 🔥 */}
+        <div className="relative mb-12 max-w-xl mx-auto group">
+          <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-600 transition-colors">
+            <Search size={20} />
+          </div>
+          <input
+            type="text"
+            placeholder="Search stories by title or content..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-14 pr-6 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 outline-none transition-all text-slate-700 font-medium"
+          />
+        </div>
+
+        {filteredBlogs.length === 0 ? (
           <div className="bg-white rounded-[2.5rem] py-24 text-center border-2 border-dashed border-slate-100">
             <BookOpen className="mx-auto text-slate-200 mb-4" size={48} />
-            <p className="text-slate-400 font-bold italic text-lg">No stories posted yet.</p>
+            <p className="text-slate-400 font-bold italic text-lg">
+              {searchQuery ? "No stories match your search." : "No stories posted yet."}
+            </p>
           </div>
         ) : (
           <div className="space-y-12">
-            {blogs.map((blog) => (
+            {filteredBlogs.map((blog) => (
               <article
                 key={blog.id}
                 className="group bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-100/40"
               >
-                {/* IMAGE SECTION - Using 'blog.image' as per your console */}
                 <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-slate-100">
                   {blog.image ? (
                     <img 
@@ -101,10 +124,9 @@ const BlogsList = () => {
                     </div>
                   )}
                   
-                  {/* Category Tag (Optional) */}
                   <div className="absolute top-4 left-4">
                     <span className="bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-black text-indigo-600 uppercase">
-                      Technology
+                      Insight
                     </span>
                   </div>
 
@@ -140,14 +162,14 @@ const BlogsList = () => {
                       <span className="flex items-center gap-1.5">
                         <Calendar size={12}/> {formatDate(blog.createdAt)}
                       </span>
-                     
                     </div>
 
-                    <p className="text-slate-600 text-base sm:text-lg leading-relaxed line-clamp-3 pt-2">
-                      {blog.content}
-                    </p>
-                    
-                  
+                    {/* Content with Scrollbar */}
+                    <div className="max-h-60 overflow-y-auto pr-2 pt-2 custom-scrollbar">
+                      <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+                        {blog.content}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </article>
@@ -155,6 +177,13 @@ const BlogsList = () => {
           </div>
         )}
       </div>
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f8fafc; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+      `}</style>
     </div>
   );
 };
