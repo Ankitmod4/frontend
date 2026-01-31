@@ -130,7 +130,7 @@ const Homepage = () => {
               </>
             )}
           </div>
-        </div>
+        </div> 
       </nav>
 
       {/* ================= HERO (ORIGINAL) ================= */}
