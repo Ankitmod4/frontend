@@ -85,7 +85,8 @@ const InfluencerSignup = () => {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "influencer");
         localStorage.setItem("influencerId", res.data.data.id);
-        navigate("/homepage");
+        alert("Redirecting to your profile... 🚀 to Update Full profile");
+        navigate("/influencer/profile");
       }
 
     } catch (error) {

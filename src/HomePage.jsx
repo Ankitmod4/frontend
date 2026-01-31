@@ -102,8 +102,20 @@ const Homepage = () => {
               </div>
             )}
           </div>
-          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X size={28} /> : <Menu size={28} />}</button>
-        </div>
+{/* MOBILE ACTIONS - Isse profile icon hamesha bahar rahega */}
+<div className="flex md:hidden items-center gap-3">
+  {isLoggedIn && (
+    <button 
+      onClick={handleProfile} 
+      className="p-2 rounded-full border bg-gray-50 text-gray-700"
+    >
+      <User size={20} />
+    </button>
+  )}
+  <button className="text-gray-700" onClick={() => setIsOpen(!isOpen)}>
+    {isOpen ? <X size={28} /> : <Menu size={28} />}
+  </button>
+</div>        </div>
 
         {/* MOBILE MENU (ORIGINAL) */}
         <div className={`md:hidden transition-all duration-300 ${isOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
@@ -114,7 +126,6 @@ const Homepage = () => {
               <>{role === "admin" && <Link to="/admin/dashboard" className="block py-2 font-medium">Admin Dashboard</Link>}
                 {role === "user" && <Link to="/addcampaign" className="block py-2 font-medium">Add Campaign</Link>}
                 {(role === "user" || role === "influencer") && <Link to="/allcampaigns" className="block py-2 font-medium">All Campaigns</Link>}
-                <button onClick={handleProfile} className="w-full text-left py-2 font-medium">Profile</button>
                 <button onClick={handleLogout} className="w-full bg-red-500 text-white py-2 rounded-xl">Logout</button>
               </>
             )}
