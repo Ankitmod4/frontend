@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 const InfluencerDetails = () => {
+    const navigate = useNavigate();
+
   const { id } = useParams();
   const [influencer, setInfluencer] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -63,12 +67,24 @@ const InfluencerDetails = () => {
       <div className="max-w-4xl mx-auto px-4">
 
         {/* 🔙 BACK */}
-        <Link
-          to="/homepage"
-          className="text-indigo-600 font-medium mb-4 inline-block"
-        >
-          ← Back to Home
-        </Link>
+        <button
+  onClick={() => navigate(-1)}
+  className="inline-flex items-center gap-2 
+             px-4 py-2 
+             bg-indigo-600 text-white 
+             font-semibold 
+             rounded-lg 
+             shadow-md 
+             hover:bg-indigo-700 
+             hover:shadow-lg 
+             active:scale-95 
+             transition-all duration-200 
+             mb-4
+             cursor-pointer"
+>
+  ← Back
+</button>
+
 
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
 
