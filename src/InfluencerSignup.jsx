@@ -127,7 +127,7 @@ const InfluencerSignup = () => {
               <SectionTitle title="Influence Statistics" />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <IconInput icon={<Tag size={18}/>} label="Category" name="Category" placeholder="Fashion" value={formData.Category} onChange={handleChange} />
-                <IconInput icon={<Users size={18}/>} label="Followers" name="Followers" placeholder="50K" type='number' value={formData.Followers} onChange={handleChange} />
+                <IconInput icon={<Users size={18}/>} label="Followers" name="Followers" placeholder="50000" type='number' value={formData.Followers} onChange={handleChange} />
                 <IconInput icon={<IndianRupee size={18}/>} label="Price (₹)" name="Price" placeholder="5000" value={formData.Price} onChange={handleChange} />
               </div>
             </div>
