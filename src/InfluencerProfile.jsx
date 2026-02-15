@@ -214,7 +214,7 @@ useEffect(() => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <IconField icon={<Users size={18}/>} label="Followers">
-                    <input type="number" name="Followers" value={form.Followers} onChange={handleChange} className="modern-input" />
+                    <input type='number' name="Followers" value={form.Followers} onChange={handleChange} className="modern-input" />
                   </IconField>
                   <IconField icon={<IndianRupee size={18}/>} label="Price (per post)">
                     <input type="number" name="Price" value={form.Price} onChange={handleChange} className="modern-input" />
