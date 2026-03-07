@@ -25,17 +25,17 @@ const AdminLogin = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!Email.trim() || !Password.trim()) {
-      alert("Bhai, saari fields bharna zaroori hai! ✍️");
+      alert("Please fill in all the fields! 📝");
       return false;
     }
 
     if (!emailRegex.test(Email)) {
-      alert("Admin email sahi format mein dalo! 📧");
+      alert("Please enter a valid admin email address! 📧");
       return false;
     }
 
     if (Password.length < 6) {
-      alert("Password kam se kam 6 characters ka hona chahiye! 🔐");
+      alert("Password must be at least 6 characters long! 🔐");
       return false;
     }
 

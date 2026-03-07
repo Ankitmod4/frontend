@@ -11,6 +11,17 @@ const Homepage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [influencers, setInfluencers] = useState([]);
   const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const hasVisited = localStorage.getItem("visited");
+
+  if (!hasVisited) {
+    alert(
+      "Welcome to InfluencerHub! Explore top influencers, create campaigns, and connect with the best in the industry. Sign up now to get started! If your profile is not complete, please complete it for a better experience."
+    );
+
+    localStorage.setItem("visited", "true");
+  }
+}, []);
 
   const navigate = useNavigate();  
 
@@ -137,8 +148,8 @@ const Homepage = () => {
       <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 py-20 text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold">Hire Top Influencers Instantly</h1>
-          <p className="mt-4 text-indigo-100 max-w-2xl mx-auto italic">Connect with verified influencers across Instagram, YouTube and LinkedIn.</p>
-          <button className="mt-8 bg-white text-indigo-600 px-8 py-3 rounded-full font-bold" onClick={() => navigate("/all-influencers")}>Explore Influencers</button>
+          <p className="mt-4 text-indigo-100 max-w-2xl mx-auto italic">Connect with  influencers across Instagram, YouTube and LinkedIn.</p>
+          <button className="mt-8 bg-white text-indigo-600 px-8 py-3 rounded-full font-bold" onClick={() => navigate("/all-influencers")}>Explore More</button>
         </div>
       </section>
 

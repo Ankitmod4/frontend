@@ -25,17 +25,17 @@ const InfluencerLogin = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!Email.trim() || !Password.trim()) {
-      alert("Bhai, login karne ke liye dono fields bharna zaroori hai! ✨");
+      alert("Both the fields are needed to Login! ✨");
       return false;
     }
 
     if (!emailRegex.test(Email)) {
-      alert("Creator email ka format sahi nahi hai! 📧");
+      alert("Please enter a valid creator email address! 📧");
       return false;
     }
 
     if (Password.length < 6) {
-      alert("Password kam se kam 6 characters ka hona chahiye! 🔐");
+      alert("Password must be at least 6 characters long! 🔐");
       return false;
     }
 
@@ -67,7 +67,7 @@ const InfluencerLogin = () => {
       }
     } catch (error) {
       // Backend error handling
-      const errorMsg = error.response?.data?.message || "Credentials sahi nahi hain, check kar lo! ❌";
+      const errorMsg = error.response?.data?.message || "Invalid credentials or Server Error ❌";
       alert(errorMsg);
     } finally {
       setLoading(false);

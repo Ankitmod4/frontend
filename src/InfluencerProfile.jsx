@@ -1,20 +1,33 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Camera, User, Mail, Lock, Tag, MapPin, Users, IndianRupee, Instagram, Youtube, Linkedin, ArrowLeft, Save } from "lucide-react";
 
 const InfluencerEditProfile = () => {
   const influencerId = localStorage.getItem("influencerId");
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
-
+ 
   const [form, setForm] = useState({
     Name: "", Email: "", Password: "", Category: "", Location: "",
     Followers: "", Price: "", instagram: "", youtube: "", linkedin: "",
   });
+  const handleRedirect = (e) => {
+  const saved = localStorage.getItem("saved");
+
+  if (saved === "true") {
+    console.log(saved);
+    navigate("/homepage");
+  } else {
+    e.preventDefault();
+    alert("Please complete your profile before leaving!");
+  }
+};
 useEffect(() => {
   const fetchProfile = async () => {
     try {
@@ -72,6 +85,7 @@ useEffect(() => {
   };
 
  const handleSubmit = async (e) => {
+  localStorage.setItem("saved", "true");
   e.preventDefault();
 
   // --- 1. Validation Logic ---
@@ -146,10 +160,10 @@ useEffect(() => {
       {/* Top Navbar Style */}
       <div className="bg-white border-b sticky top-0 z-10 px-4 py-4 mb-8">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link to="/homepage" className="flex items-center text-slate-600 hover:text-indigo-600 transition-colors group">
+          <div onClick={handleRedirect} className="flex items-center text-slate-600 hover:text-indigo-600 transition-colors group">
             <ArrowLeft size={20} className="mr-2 group-hover:-translate-x-1 transition-transform" />
             <span className="font-semibold text-sm">Back to Dashboard</span>
-          </Link>
+          </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Edit Profile
           </h1>

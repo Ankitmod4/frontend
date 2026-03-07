@@ -34,13 +34,13 @@ const AdminPage = () => {
   };
 
   const deleteUser = async (id) => {
-    if (!window.confirm("Bhai, kya sach mein is user ko udaana hai?")) return;
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
     await axios.delete(`https://influencal.influencialhub.com/api/admin/user/${id}`);
     fetchUsers();
   };
 
   const deleteInfluencer = async (id) => {
-    if (!window.confirm("Influencer delete karein?")) return;
+    if (!window.confirm("Are you sure you want to delete this influencer?")) return;
     await axios.delete(`https://influencal.influencialhub.com/api/admin/influencer/${id}`);
     fetchInfluencers();
   };
