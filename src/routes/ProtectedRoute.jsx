@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoute = ({ allowedRoles, redirectTo = "/business/signup" }) => {
+const ProtectedRoute = ({ allowedRoles, redirectTo = "/" }) => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const role = localStorage.getItem("role");
 
