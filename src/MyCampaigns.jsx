@@ -41,7 +41,7 @@ const MyCampaigns = () => {
     // databaseId here is camp.id coming from your MySQL/Sequelize model
     if (window.confirm("Delete this campaign permanently?")) {
       try {
-        const response = await axios.delete(`http://localhost:8080/api/campaigns/${databaseId}`);
+        const response = await axios.delete(`https://influencal.influencialhub.com/api/campaigns/${databaseId}`);
         
         if (response.data.success) {
           // Update State: Remove from UI only after successful DB deletion
