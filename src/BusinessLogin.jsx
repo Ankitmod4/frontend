@@ -64,6 +64,7 @@ const BusinessLogin = () => {
 
       if (res.data.success) {
         localStorage.setItem("businessId", res.data.data.id);
+        localStorage.setItem("businessEmail", res.data.data.Email);
         localStorage.setItem("business", JSON.stringify(res.data.data));
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "user");

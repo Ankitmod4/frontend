@@ -34,7 +34,7 @@ const InfluencerSignup = () => {
           [name]: value
         }
       });
-    } else {
+    }  else {
       setFormData({ ...formData, [name]: value });
     }
   };
@@ -50,12 +50,22 @@ const InfluencerSignup = () => {
     alert("Please enter your email address! 📧");
     return false;
   }
-  
+  // Make compulsary Instagram url also 
+    if (!AccountLinks.instagram.trim()) {
+      alert("Please enter your Instagram profile link! 📸")
+      return false
+      };
+
   if (!emailRegex.test(Email.trim())) {
     alert("Please enter a valid email address (e.g., name@example.com)! 📧");
     return false;
   }
-
+ // Make proper validation for instagram url
+  const instagramRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/[A-Za-z0-9._%+-]+\/?$/;  
+  if (!instagramRegex.test(AccountLinks.instagram.trim())) {
+    alert("Please enter a valid Instagram profile link (e.g., https://instagram.com/yourprofile)! 📸")
+    return false
+    };
   // 2. Password Validation (Minimum 6 characters)
   if (!Password.trim()) {
     alert("Please enter a password! 🔐");

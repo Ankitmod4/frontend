@@ -11,17 +11,6 @@ const Homepage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [influencers, setInfluencers] = useState([]);
   const [loading, setLoading] = useState(true);
-useEffect(() => {
-  const hasVisited = localStorage.getItem("visited");
-
-  if (!hasVisited) {
-    alert(
-      "Welcome to InfluencerHub! Explore top influencers, create campaigns, and connect with the best in the industry. Sign up now to get started! If your profile is not complete, please complete it for a better experience."
-    );
-
-    localStorage.setItem("visited", "true");
-  }
-}, []);
 
   const navigate = useNavigate();  
 
@@ -29,36 +18,53 @@ useEffect(() => {
   const role = localStorage.getItem("role");  
 
   const [filters, setFilters] = useState({
-    category: "",
+    category: [],
     city: "",
     followers: "",
     budget: "",
   }); 
 
   // ================= FILTER LOGIC =================
-  const filteredInfluencers = influencers.filter((inf) => {
-    if (filters.category.length > 0 && !filters.category.includes(inf.Category))
-  return false;
-
-    if (filters.city && !inf.Location?.toLowerCase().includes(filters.city.toLowerCase())) return false;
+ // ================= UPDATED FILTER LOGIC =================
+const filteredInfluencers = influencers.filter((inf) => {
+  
+  // ✅ FIX: Handling Multi-Category Strings (e.g., "Tech, Fashion")
+  if (filters.category.length > 0) {
+    // 1. Convert "Tech, Fashion" into ["Tech", "Fashion"]
+    const influencerCats = inf.Category.split(',').map(c => c.trim());
     
-    if (filters.followers) {
-      const followersInK = inf.Followers / 1000;
-      if (filters.followers === "1-10" && !(followersInK >= 1 && followersInK <= 10)) return false;
-      if (filters.followers === "10-50" && !(followersInK > 10 && followersInK <= 50)) return false;
-      if (filters.followers === "50-100" && !(followersInK > 50 && followersInK <= 100)) return false;
-      if (filters.followers === "100+" && followersInK <= 100) return false;
-    }
+    // 2. Check if at least one selected filter exists in the influencer's categories
+    const hasMatchingCategory = filters.category.some(selectedCat => 
+      influencerCats.includes(selectedCat)
+    );
 
-    if (filters.budget) {
-      const priceInK = inf.Price / 1000;
-      if (filters.budget === "0-5" && priceInK > 5) return false;
-      if (filters.budget === "5-15" && !(priceInK > 5 && priceInK <= 15)) return false;
-      if (filters.budget === "15-50" && !(priceInK > 15 && priceInK <= 50)) return false;
-      if (filters.budget === "50+" && priceInK <= 50) return false;
-    }
-    return true;
-  });
+    if (!hasMatchingCategory) return false;
+  }
+
+  // ... rest of your city, followers, and budget logic remains the same
+  if (filters.city && !inf.Location?.toLowerCase().includes(filters.city.toLowerCase())) return false;
+  
+  // Followers (Using raw number from DB)
+  if (filters.followers) {
+    const f = inf.Followers; 
+    if (filters.followers === "1-10" && !(f >= 1 && f <= 10)) return false;
+    if (filters.followers === "10-50" && !(f > 10 && f <= 50)) return false;
+    if (filters.followers === "50-100" && !(f > 50 && f <= 100)) return false;
+    if (filters.followers === "100-500" && !(f > 100 && f <= 500)) return false;
+    if (filters.followers === "500-1000" && !(f > 500 && f <= 1000)) return false;
+    if (filters.followers === "1000+" && f < 1000) return false;
+  }
+
+  if (filters.budget) {
+    const priceInK = inf.Price / 1000;
+    if (filters.budget === "0-5" && priceInK > 5) return false;
+    if (filters.budget === "5-15" && !(priceInK > 5 && priceInK <= 15)) return false;
+    if (filters.budget === "15-50" && !(priceInK > 15 && priceInK <= 50)) return false;
+    if (filters.budget === "50+" && priceInK <= 50) return false;
+  }
+
+  return true;
+});
 
   const handleLogout = () => {
     localStorage.clear();
@@ -107,6 +113,7 @@ useEffect(() => {
             {isLoggedIn && (
               <div className="hidden md:flex items-center gap-4">
                 {role === "user" && <Link to="/addcampaign" className="text-gray-700 font-medium">Add Campaign</Link>}
+                {role=== "user" && <Link to="/Mycampaigns" className="text-gray-700 font-medium">My Campaigns</Link>}
                 {(role === "user" || role === "influencer") && <Link to="/allcampaigns" className="text-gray-700 font-medium">All Campaigns</Link>}
                 <button onClick={handleProfile} className="p-2 rounded-full border hover:bg-gray-100"><User size={20} /></button>
                 <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded-xl">Logout</button>
@@ -137,6 +144,7 @@ useEffect(() => {
               <>{role === "admin" && <Link to="/admin/dashboard" className="block py-2 font-medium">Admin Dashboard</Link>}
                 {role === "user" && <Link to="/addcampaign" className="block py-2 font-medium">Add Campaign</Link>}
                 {(role === "user" || role === "influencer") && <Link to="/allcampaigns" className="block py-2 font-medium">All Campaigns</Link>}
+                {role === "user" && <Link to="/Mycampaigns" className="block py-2 font-medium">My Campaigns</Link>}
                 <button onClick={handleLogout} className="w-full bg-red-500 text-white py-2 rounded-xl">Logout</button>
               </>
             )}
@@ -148,8 +156,8 @@ useEffect(() => {
       <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 py-20 text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold">Hire Top Influencers Instantly</h1>
-          <p className="mt-4 text-indigo-100 max-w-2xl mx-auto italic">Connect with  influencers across Instagram, YouTube and LinkedIn.</p>
-          <button className="mt-8 bg-white text-indigo-600 px-8 py-3 rounded-full font-bold" onClick={() => navigate("/all-influencers")}>Explore More</button>
+          <p className="mt-4 text-indigo-100 max-w-2xl mx-auto italic">Connect with verified influencers across Instagram, YouTube and LinkedIn.</p>
+          <button className="mt-8 bg-white text-indigo-600 px-8 py-3 rounded-full font-bold" onClick={() => navigate("/all-influencers")}>Explore Influencers</button>
         </div>
       </section>
 

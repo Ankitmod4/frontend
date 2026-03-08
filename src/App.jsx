@@ -16,6 +16,7 @@ import InfluencerProfile from "./InfluencerProfile.jsx";
 import AllInfluencers from "./AllInfluencers.jsx";
 import Unauthorized from "./routes/Unauthorized.jsx";
 import BlogsList from "./BlogsList.jsx";
+import MyCampaigns from "./MyCampaigns.jsx";
 
 import AdminRoute from "./routes/AdminRoute.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
@@ -29,6 +30,7 @@ const App = () => {
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/influencer/signup" element={<InfluencerSignup />} />
       <Route path="/influencer/auth" element={<InfluencerLogin />} />
+      
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/homepage" element={<HomePage />} />
       <Route path="/influencer/:id" element={<InfluencerDetails />} />
@@ -43,6 +45,7 @@ const App = () => {
       <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
         <Route path="/addcampaign" element={<AddCampaign />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/mycampaigns" element={<MyCampaigns />} />
       </Route>
 
       {/* ================= USER + INFLUENCER ================= */}
