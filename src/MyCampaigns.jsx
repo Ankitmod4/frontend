@@ -17,7 +17,7 @@ const MyCampaigns = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/api/campaigns/email', {
+      const response = await axios.post('https://influencal.influencialhub.com/api/campaigns/email', {
         email: businessEmail 
       });
 
