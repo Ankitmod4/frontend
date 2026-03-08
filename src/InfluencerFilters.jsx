@@ -1,13 +1,21 @@
 import React from "react";
 
 const InfluencerFilters = ({ filters, setFilters, layout = "vertical" }) => {
-  const categories = ["Fashion", "Tech", "Lifestyle", "Food", "Travel", "Fitness", "Education"];
+  // ✅ UPDATED CATEGORIES
+  const categories = [
+    "Fashion", "Beauty", "Lifestyle", "Travel", "Food", "Fitness", 
+    "Tech", "Finance", "Business", "Education", "Entertainment", 
+    "Gaming", "Health", "Parenting", "Automobile"
+  ];
 
+  // ✅ UPDATED FOLLOWER SLABS
   const followerRanges = [
     { label: "1K-10K", value: "1-10" },
     { label: "10K-50K", value: "10-50" },
     { label: "50K-100K", value: "50-100" },
-    { label: "100K+", value: "100+" },
+    { label: "100K-500K", value: "100-500" },
+    { label: "500K-1M", value: "500-1000" },
+    { label: "1M+", value: "1000+" },
   ];
 
   const budgetRanges = [
@@ -34,12 +42,12 @@ const InfluencerFilters = ({ filters, setFilters, layout = "vertical" }) => {
   const isHorizontal = layout === "horizontal";
 
   return (
-    <div className={`flex ${isHorizontal ? "flex-row items-center gap-6 justify-between" : "flex-col gap-6"}`}>
+    <div className={`flex ${isHorizontal ? "flex-row items-center gap-6 justify-between" : "flex-col gap-6"} bg-white p-4 rounded-2xl shadow-sm border border-gray-100`}>
 
       {/* CATEGORY (MULTI SELECT) */}
-      <div className={isHorizontal ? "flex-1 min-w-[150px]" : ""}>
-        <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">
-          Category (Multiple)
+      <div className={isHorizontal ? "flex-[2] min-w-[250px]" : ""}>
+        <p className="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest">
+          Influencer Categories
         </p>
 
         <div className={`flex gap-2 overflow-x-auto no-scrollbar ${isHorizontal ? "pb-1" : "flex-wrap"}`}>
@@ -49,10 +57,10 @@ const InfluencerFilters = ({ filters, setFilters, layout = "vertical" }) => {
               <button
                 key={cat}
                 onClick={() => toggleCategory(cat)}
-                className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all whitespace-nowrap ${
+                className={`px-4 py-1.5 rounded-full text-[11px] font-bold border transition-all duration-300 whitespace-nowrap ${
                   active
-                    ? "bg-indigo-600 border-indigo-600 text-white"
-                    : "bg-gray-50 text-gray-500 border-gray-200 hover:border-gray-300"
+                    ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-100"
+                    : "bg-gray-50 text-gray-500 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
                 }`}
               >
                 {cat}
@@ -62,18 +70,18 @@ const InfluencerFilters = ({ filters, setFilters, layout = "vertical" }) => {
         </div>
       </div>
 
-      {/* FOLLOWERS */}
-      <div className={isHorizontal ? "flex-1 min-w-[200px] border-l border-gray-100 pl-4" : ""}>
-        <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Followers</p>
-        <div className="flex gap-2">
+      {/* FOLLOWERS SLABS */}
+      <div className={isHorizontal ? "flex-[1.5] min-w-[300px] border-l border-gray-100 pl-6" : ""}>
+        <p className="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest">Follower Count</p>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
           {followerRanges.map((f) => (
             <button
               key={f.value}
               onClick={() => handleToggle("followers", f.value)}
-              className={`px-2 py-1 rounded-lg text-[10px] font-bold border ${
+              className={`px-3 py-1.5 rounded-xl text-[10px] font-bold border transition-all ${
                 filters.followers === f.value
-                  ? "bg-gray-800 text-white border-gray-800"
-                  : "bg-white text-gray-500 border-gray-200"
+                  ? "bg-gray-900 text-white border-gray-900 shadow-lg"
+                  : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
               }`}
             >
               {f.label}
@@ -83,17 +91,17 @@ const InfluencerFilters = ({ filters, setFilters, layout = "vertical" }) => {
       </div>
 
       {/* BUDGET */}
-      <div className={isHorizontal ? "flex-1 min-w-[200px] border-l border-gray-100 pl-4" : ""}>
-        <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Budget</p>
-        <div className="flex gap-2">
+      <div className={isHorizontal ? "flex-1 min-w-[200px] border-l border-gray-100 pl-6" : ""}>
+        <p className="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest">Budget</p>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
           {budgetRanges.map((b) => (
             <button
               key={b.value}
               onClick={() => handleToggle("budget", b.value)}
-              className={`px-2 py-1 rounded-lg text-[10px] font-bold border ${
+              className={`px-3 py-1.5 rounded-xl text-[10px] font-bold border transition-all ${
                 filters.budget === b.value
-                  ? "bg-gray-800 text-white border-gray-800"
-                  : "bg-white text-gray-500 border-gray-200"
+                  ? "bg-green-600 text-white border-green-600 shadow-md shadow-green-100"
+                  : "bg-white text-gray-500 border-gray-200 hover:bg-green-50 hover:text-green-600"
               }`}
             >
               {b.label}
@@ -102,25 +110,26 @@ const InfluencerFilters = ({ filters, setFilters, layout = "vertical" }) => {
         </div>
       </div>
 
-      {/* LOCATION */}
-      <div className={isHorizontal ? "w-48 border-l border-gray-100 pl-4" : ""}>
-        <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Location</p>
-        <input
-          type="text"
-          placeholder="Search City..."
-          className="w-full text-xs p-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-indigo-400"
-          value={filters.city}
-          onChange={(e) => setFilters({ ...filters, city: e.target.value })}
-        />
-      </div>
+      {/* LOCATION & RESET */}
+      <div className={`flex items-end gap-4 ${isHorizontal ? "border-l border-gray-100 pl-6" : ""}`}>
+        <div className="w-40">
+          <p className="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest">Location</p>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="e.g. Mumbai"
+              className="w-full text-xs p-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-indigo-400 transition-all font-medium"
+              value={filters.city}
+              onChange={(e) => setFilters({ ...filters, city: e.target.value })}
+            />
+          </div>
+        </div>
 
-      {/* RESET */}
-      <div className={isHorizontal ? "border-l border-gray-100 pl-4" : ""}>
         <button
           onClick={() =>
             setFilters({ category: [], city: "", followers: "", budget: "" })
           }
-          className="text-[10px] font-bold text-red-500 hover:underline uppercase"
+          className="h-[40px] px-3 text-[10px] font-black text-red-400 hover:text-red-600 uppercase transition-colors"
         >
           Reset
         </button>

@@ -36,13 +36,17 @@ const InfluencerSignup = () => {
       });
     }  else {
       setFormData({ ...formData, [name]: value });
-    }
+    } 
   };
 
   // --- Specialized Influencer Validation ---
  const validateForm = () => {
-  const { Email, Password, AccountLinks } = formData;
+  const { Email, Password, AccountLinks,Name,Category,Location,Followers } = formData;
 
+   if(!Name.trim() || !Category.trim() || !Location.trim() || !Followers.trim() || !Email.trim() || !Password.trim() || !AccountLinks.instagram.trim()) {
+    alert("Please fill in all the required fields! 📝");
+    return false;
+   }
   // 1. Email Validation (Checking for @ and domain extension like .com)
   const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
   
