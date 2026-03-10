@@ -87,7 +87,7 @@ const MyCampaigns = () => {
         {campaigns.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-gray-200">
             <p className="text-gray-400 text-lg">No active campaigns found in your database.</p>
-            <Link to="/create" className="text-indigo-600 font-bold hover:underline mt-2 inline-block">Create one now +</Link>
+            <Link to="/addcampaign" className="text-indigo-600 font-bold hover:underline mt-2 inline-block">Create one now +</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -126,7 +126,7 @@ const MyCampaigns = () => {
                 <div className="p-8 bg-white flex justify-between items-center border-t border-gray-100">
                   <div>
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Budget</span>
-                    <p className="text-3xl font-black text-green-600">${camp.budget}</p>
+                    <p className="text-3xl font-black text-green-600">₹{camp.budget}</p>
                   </div>
                   <div className="text-right">
                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Location</span>

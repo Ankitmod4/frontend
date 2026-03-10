@@ -160,7 +160,7 @@ const filteredInfluencers = influencers.filter((inf) => {
       <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 py-20 text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold">Hire Top Influencers Instantly</h1>
-          <p className="mt-4 text-indigo-100 max-w-2xl mx-auto italic">Connect with verified influencers across Instagram, YouTube and LinkedIn.</p>
+          <p className="mt-4 text-indigo-100 max-w-2xl mx-auto italic">Connect with  influencers across Instagram, YouTube and LinkedIn.</p>
           <button className="mt-8 bg-white text-indigo-600 px-8 py-3 rounded-full font-bold" onClick={() => navigate("/all-influencers")}>Explore Influencers</button>
         </div>
       </section>

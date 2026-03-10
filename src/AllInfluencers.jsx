@@ -44,26 +44,49 @@ const AllInfluencers = () => {
 
   // ================= FILTER LOGIC =================
   const filteredInfluencers = influencers.filter((inf) => {
-    if (filters.category && inf.Category !== filters.category) return false;
-    if (filters.city && !inf.Location?.toLowerCase().includes(filters.city.toLowerCase())) return false;
-    
-    if (filters.followers) {
-      const fInK = inf.Followers / 1000;
-      if (filters.followers === "1-10" && !(fInK >= 1 && fInK <= 10)) return false;
-      if (filters.followers === "10-50" && !(fInK > 10 && fInK <= 50)) return false;
-      if (filters.followers === "50-100" && !(fInK > 50 && fInK <= 100)) return false;
-      if (filters.followers === "100+" && fInK <= 100) return false;
-    }
+  
+  // 1. Category Filter (Already working)
+  if (filters.category.length > 0) {
+    if (!inf.Category) return false;
+    const influencerCats = inf.Category.split(',').map(c => c.trim().toLowerCase());
+    const hasMatchingCategory = filters.category.some(selectedCat => 
+      influencerCats.includes(selectedCat.toLowerCase())
+    );
+    if (!hasMatchingCategory) return false;
+  }
 
-    if (filters.budget) {
-      const pInK = inf.Price / 1000;
-      if (filters.budget === "0-5" && pInK > 5) return false;
-      if (filters.budget === "5-15" && !(pInK > 5 && pInK <= 15)) return false;
-      if (filters.budget === "15-50" && !(pInK > 15 && pInK <= 50)) return false;
-      if (filters.budget === "50+" && pInK <= 50) return false;
-    }
-    return true;
-  });
+  // 2. City Filter
+  if (filters.city && !inf.Location?.toLowerCase().includes(filters.city.toLowerCase())) {
+    return false;
+  }
+  
+  // ✅ FOLLOWERS FIX: "3,000 followers" -> 3000
+  if (filters.followers) {
+    // String se numbers nikalne ka logic
+    const rawFollowers = inf.Followers ? String(inf.Followers).replace(/[^0-9]/g, '') : "0";
+    const f = parseInt(rawFollowers, 10); 
+
+    // Ab slabs check karein (Values are in thousands like your filter component)
+    if (filters.followers === "1-10" && !(f >= 1000 && f <= 10000)) return false;
+    if (filters.followers === "10-50" && !(f > 10000 && f <= 50000)) return false;
+    if (filters.followers === "50-100" && !(f > 50000 && f <= 100000)) return false;
+    if (filters.followers === "100-500" && !(f > 100000 && f <= 500000)) return false;
+    if (filters.followers === "500-1000" && !(f > 500000 && f <= 1000000)) return false;
+    if (filters.followers === "1000+" && f < 1000000) return false;
+  }
+
+  // 3. Budget Logic
+  if (filters.budget) {
+    const price = Number(inf.Price) || 0;
+    if (filters.budget === "0-5" && price > 5000) return false;
+    if (filters.budget === "5-15" && !(price > 5000 && price <= 15000)) return false;
+    if (filters.budget === "15-50" && !(price > 15000 && price <= 50000)) return false;
+    if (filters.budget === "50+" && price <= 50000) return false;
+  }
+
+  return true;
+});
+
 
   return (
     <div className="bg-gray-50 min-h-screen pb-10">
