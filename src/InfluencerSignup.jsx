@@ -3,8 +3,14 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { 
   User, Mail, Lock, Tag, MapPin, Users, 
-  IndianRupee, Instagram, Youtube, Sparkles, Loader2, ArrowRight 
+  IndianRupee, Instagram, Youtube, Sparkles, Loader2, ArrowRight, X 
 } from "lucide-react";
+
+const categoriesSlab = [
+  "Fashion", "Beauty", "Lifestyle", "Travel", "Food", "Fitness", 
+  "Tech", "Finance", "Business", "Education", "Entertainment", 
+  "Gaming", "Health", "Parenting", "Automobile"
+];
 
 const InfluencerSignup = () => {
   const navigate = useNavigate();
@@ -14,7 +20,7 @@ const InfluencerSignup = () => {
     Name: "",
     Email: "",
     Password: "",
-    Category: "",
+    Category: "", // Yeh comma-separated string hi rahegi
     Location: "",
     Followers: "",
     Price: "",
@@ -29,80 +35,50 @@ const InfluencerSignup = () => {
     if (name === "instagram" || name === "youtube") {
       setFormData({
         ...formData,
-        AccountLinks: {
-          ...formData.AccountLinks,
-          [name]: value
-        }
+        AccountLinks: { ...formData.AccountLinks, [name]: value }
       });
-    }  else {
+    } else {
       setFormData({ ...formData, [name]: value });
     } 
   };
 
-  // --- Specialized Influencer Validation ---
- const validateForm = () => {
-  const { Email, Password, AccountLinks,Name,Category,Location,Followers } = formData;
+  // --- Multi-Select Logic ---
+  const handleCategoryClick = (cat) => {
+    let currentCats = formData.Category ? formData.Category.split(", ") : [];
+    
+    if (currentCats.includes(cat)) {
+      // Agar already selected hai toh remove karo
+      currentCats = currentCats.filter(item => item !== cat);
+    } else {
+      // Add karo
+      currentCats.push(cat);
+    }
+    
+    setFormData({ ...formData, Category: currentCats.join(", ") });
+  };
 
-   if(!Name.trim() || !Category.trim() || !Location.trim() || !Followers.trim() || !Email.trim() || !Password.trim() || !AccountLinks.instagram.trim()) {
-    alert("Please fill in all the required fields! 📝");
-    return false;
-   }
-  // 1. Email Validation (Checking for @ and domain extension like .com)
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-  
-  if (!Email.trim()) {
-    alert("Please enter your email address! 📧");
-    return false;
-  }
-  // Make compulsary Instagram url also 
-    if (!AccountLinks.instagram.trim()) {
-      alert("Please enter your Instagram profile link! 📸")
-      return false
-      };
-
-  if (!emailRegex.test(Email.trim())) {
-    alert("Please enter a valid email address (e.g., name@example.com)! 📧");
-    return false;
-  }
- // Make proper validation for instagram url
-  const instagramRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/[A-Za-z0-9._%+-]+\/?$/;  
-  if (!instagramRegex.test(AccountLinks.instagram.trim())) {
-    alert("Please enter a valid Instagram profile link (e.g., https://instagram.com/yourprofile)! 📸")
-    return false
-    };
-  // 2. Password Validation (Minimum 6 characters)
-  if (!Password.trim()) {
-    alert("Please enter a password! 🔐");
-    return false;
-  }
-
-  if (Password.length < 6) {
-    alert("Password must be at least 6 characters long! 🔐");
-    return false;
-  }
-
-
-  return true;
-};
+  const validateForm = () => {
+    const { Email, Password, AccountLinks, Name, Category, Location, Followers } = formData;
+    if(!Name.trim() || !Category.trim() || !Location.trim() || !Followers.trim() || !Email.trim() || !Password.trim() || !AccountLinks.instagram.trim()) {
+      alert("Please fill in all the required fields! 📝");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
-
     setLoading(true);
     try {
       const res = await axios.post("https://influencal.influencialhub.com/api/influencer/signup", formData);
       if (res.data.success) {
         alert("Creator Profile Created! 🎉");
-        console.log(res.data);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "influencer");
         localStorage.setItem("influencerId", res.data.data.id);
-        alert("Redirecting to your profile... 🚀 to Update Full profile");
         navigate("/influencer/profile");
       }
-
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed! ❌");
     } finally {
@@ -113,39 +89,65 @@ const InfluencerSignup = () => {
   return (
     <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-4 sm:p-8 relative overflow-hidden">
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
-      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
-
+      
       <div className="w-full max-w-2xl z-10">
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-purple-100/50 border border-slate-100 overflow-hidden animate-in fade-in zoom-in duration-500">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
           
           <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-8 text-white text-center">
-            <div className="inline-flex p-3 bg-white/20 rounded-2xl mb-4 backdrop-blur-md border border-white/30">
+            <div className="inline-flex p-3 bg-white/20 rounded-2xl mb-4 backdrop-blur-md">
               <Sparkles size={32} />
             </div>
-            <h2 className="text-3xl font-black tracking-tight leading-tight">Join the Creator Hub</h2>
-            <p className="text-purple-100/80 text-sm mt-2 font-medium">Create your profile and start collaborating with top brands.</p>
+            <h2 className="text-3xl font-black tracking-tight">Join the Creator Hub</h2>
+            <p className="text-purple-100/80 text-sm mt-2">Select your niches and start collaborating.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="p-8 md:p-10 space-y-8">
+            {/* Credentials Section */}
             <div className="space-y-4">
               <SectionTitle title="Personal Credentials" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <IconInput icon={<User size={18}/>} label="Full Name" name="Name" placeholder="Rahul Sharma" value={formData.Name} onChange={handleChange} />
                 <IconInput icon={<Mail size={18}/>} label="Email Address" type="email" name="Email" placeholder="rahul@creator.com" value={formData.Email} onChange={handleChange} />
-                <IconInput icon={<Lock size={18}/>} label="Create Password" type="password" name="Password" placeholder="••••••••" value={formData.Password} onChange={handleChange} />
+                <IconInput icon={<Lock size={18}/>} label="Password" type="password" name="Password" placeholder="••••••••" value={formData.Password} onChange={handleChange} />
                 <IconInput icon={<MapPin size={18}/>} label="Location" name="Location" placeholder="Mumbai, India" value={formData.Location} onChange={handleChange} />
               </div>
             </div>
 
+            {/* Category Multi-Select Slab */}
+            <div className="space-y-4">
+              <SectionTitle title="Choose Your Categories (Select Multiple)" />
+              <div className="flex flex-wrap gap-2 p-4 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                {categoriesSlab.map((cat) => {
+                  const isSelected = formData.Category.split(", ").includes(cat);
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => handleCategoryClick(cat)}
+                      className={`px-4 py-2 rounded-full text-xs font-bold transition-all border ${
+                        isSelected 
+                        ? "bg-purple-600 text-white border-purple-600 shadow-md scale-105" 
+                        : "bg-white text-slate-600 border-slate-200 hover:border-purple-300"
+                      }`}
+                    >
+                      {cat} {isSelected && "✓"}
+                    </button>
+                  );
+                })}
+              </div>
+              <input type="hidden" name="Category" value={formData.Category} />
+            </div>
+
+            {/* Stats Section */}
             <div className="space-y-4">
               <SectionTitle title="Influence Statistics" />
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <IconInput icon={<Tag size={18}/>} label="Category" name="Category" placeholder="Fashion" value={formData.Category} onChange={handleChange} />
-                <IconInput icon={<Users size={18}/>} label="Followers" name="Followers" placeholder="50000" type='number' value={formData.Followers} onChange={handleChange} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <IconInput icon={<Users size={18}/>} label="Followers" name="Followers" placeholder="50000" type='text' value={formData.Followers} onChange={handleChange} />
                 <IconInput icon={<IndianRupee size={18}/>} label="Price (₹)" name="Price" placeholder="5000" value={formData.Price} onChange={handleChange} />
               </div>
             </div>
 
+            {/* Socials */}
             <div className="space-y-4">
               <SectionTitle title="Social Media Presence" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -154,23 +156,9 @@ const InfluencerSignup = () => {
               </div>
             </div>
 
-            <div className="pt-4">
-              <button
-                type="submit"
-                disabled={loading}
-                className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl ${
-                  loading ? "bg-slate-200 text-slate-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200"
-                }`}
-              >
-                {loading ? <Loader2 className="animate-spin" size={24} /> : <>Create Creator Account <ArrowRight size={20} /></>}
-              </button>
-            </div>
-
-            <div className="text-center pt-2">
-              <p className="text-slate-500 text-sm font-medium">
-                Already part of the hub? <Link to="/influencer/auth" className="text-purple-600 hover:text-purple-700 font-bold ml-1 transition-colors">Log In here</Link>
-              </p>
-            </div>
+            <button type="submit" disabled={loading} className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] ${loading ? "bg-slate-200" : "bg-purple-600 text-white shadow-xl shadow-purple-200"}`}>
+              {loading ? <Loader2 className="animate-spin" /> : "Create Account"}
+            </button>
           </form>
         </div>
       </div>
@@ -191,7 +179,6 @@ const InfluencerSignup = () => {
         .custom-input:focus {
           background-color: white;
           border-color: #9333ea;
-          box-shadow: 0 4px 12px -2px rgba(147, 51, 234, 0.1);
         }
       `}</style>
     </div>
